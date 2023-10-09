@@ -113,8 +113,3 @@ exports
 dist
 build
 .strapi-updater.json
-
-############################
-# hum
-############################
-compose.d/gitignored*.yml

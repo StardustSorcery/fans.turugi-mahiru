@@ -1,0 +1,50 @@
+services:
+  proxy:
+    image: nginx:1.24.0-alpine
+    environment:
+      TZ: Asia/Tokyo
+    volumes:
+      - ./services/proxy/conf.d:/etc/nginx/conf.d
+    ports:
+      - ${HTTP_PORT:-8080}:80
+
+  db:
+    image: mysql:8.0.30-oracle
+    command:
+      - --authentication_policy=mysql_native_password
+    environment:
+      TZ: Asia/Tokyo
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      MYSQL_USER: ${DB_USER:-dev}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-password}
+      MYSQL_DATABASE: ${DB_DATABASE:-dev}
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - ${DB_PORT:-3306}:3306
+
+  cms:
+    depends_on:
+      - db
+    build:
+      context: ./services/cms
+      dockerfile: dev.Dockerfile
+      args:
+        PUBLIC_URL: http://cms.turugi-mahiru.fans.127.0.0.1.nip.io:${HTTP_PORT:-8080}/
+    volumes:
+      - ./services/cms:/app
+
+  # www
+  www:
+    profiles:
+      - www
+    depends_on:
+      - cms
+    build:
+      context: ./services/www
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./services/www:/app
+
+volumes:
+  db_data:

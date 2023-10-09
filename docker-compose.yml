@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  cms:
+    image: localhost/fans_turugi-mahiru/cms
+    environment:
+      TZ: Asia/Tokyo
+      DATABASE_HOST: ${DB_HOST:-db}
+      DATABASE_USER: ${DB_USER:-dev}
+      DATABASE_PASSWORD: ${DB_PASSWORD:-password}
+      DATABASE_NAME: ${DB_DATABASE:-dev}
+      JWT_SECRET: ${CMS_JWT_SECRET}
+      ADMIN_JWT_SECRET: ${CMS_ADMIN_JWT_SECRET}
+      API_TOKEN_SALT: ${CMS_API_TOKEN_SALT}
+      APP_KEYS: ${CMS_APP_KEYS}
+
+  # www
+  www:
+    image: localhost/fans_turugi-mahiru/www
+    environment:
+      TZ: Asia/Tokyo
