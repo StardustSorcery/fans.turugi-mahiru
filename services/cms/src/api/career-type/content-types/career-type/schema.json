@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "career_types",
+  "info": {
+    "singularName": "career-type",
+    "pluralName": "career-types",
+    "displayName": "Career Type"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "displayName": {
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "type": "string",
+      "required": true,
+      "unique": true
+    }
+  }
+}

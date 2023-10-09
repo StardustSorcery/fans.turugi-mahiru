@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_pattern_key_values",
+  "info": {
+    "displayName": "Key Value"
+  },
+  "options": {},
+  "attributes": {
+    "key": {
+      "type": "string",
+      "required": true
+    },
+    "value": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

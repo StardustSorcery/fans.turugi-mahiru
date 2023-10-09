@@ -1,0 +1,31 @@
+{
+  "kind": "singleType",
+  "collectionName": "provided_services_sets",
+  "info": {
+    "singularName": "provided-services-set",
+    "pluralName": "provided-services-sets",
+    "displayName": "Provided Services Set",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "services": {
+      "displayName": "Service",
+      "type": "component",
+      "repeatable": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "data-type.service"
+    }
+  }
+}

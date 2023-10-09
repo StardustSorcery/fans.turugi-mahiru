@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "aggregated_recommendations",
+  "info": {
+    "singularName": "aggregated-recommendation",
+    "pluralName": "aggregated-recommendations",
+    "displayName": "RecommendationAggregated",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "aggregatedAt": {
+      "type": "datetime",
+      "required": true
+    },
+    "scoredVideoSets": {
+      "displayName": "Scored Video Set",
+      "type": "component",
+      "repeatable": true,
+      "component": "data-type.scored-video-set"
+    },
+    "votings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::recommendation-voting.recommendation-voting",
+      "mappedBy": "aggregated"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  strapi:
+    build:
+      context: ..
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ..:/opt/app
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:8.0.30-oracle
+    command:
+      - --authentication_policy=mysql_native_password
+    environment:
+      TZ: Asia/Tokyo
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: strapi_dev
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: strapi_dev
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+

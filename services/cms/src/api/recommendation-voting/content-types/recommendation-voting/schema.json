@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "recommendation_votings",
+  "info": {
+    "singularName": "recommendation-voting",
+    "pluralName": "recommendation-votings",
+    "displayName": "RecommendationVoting",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "userId": {
+      "type": "string",
+      "required": true
+    },
+    "videoSets": {
+      "type": "component",
+      "repeatable": true,
+      "component": "data-type.video-set"
+    },
+    "aggregated": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::aggregated-recommendation.aggregated-recommendation",
+      "inversedBy": "votings"
+    }
+  }
+}

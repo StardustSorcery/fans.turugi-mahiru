@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_pattern_templates",
+  "info": {
+    "displayName": "Template"
+  },
+  "options": {},
+  "attributes": {
+    "key": {
+      "type": "string",
+      "required": true
+    },
+    "pattern": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

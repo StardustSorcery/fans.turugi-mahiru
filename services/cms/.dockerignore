@@ -1,0 +1,13 @@
+Dockerfile
+dev.Dockerfile
+
+README.md
+
+/public/uploads/*
+
+/node_modules/
+
+/exports/
+/dist/
+/build/
+

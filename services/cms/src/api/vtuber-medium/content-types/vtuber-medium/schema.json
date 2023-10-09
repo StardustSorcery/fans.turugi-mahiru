@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "vtuber_media",
+  "info": {
+    "singularName": "vtuber-medium",
+    "pluralName": "vtuber-media",
+    "displayName": "VTuber Medium",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "displayName": {
+      "type": "string",
+      "required": true
+    },
+    "variant": {
+      "type": "string",
+      "required": true,
+      "default": "default"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "image",
+        "video",
+        "voice",
+        "music",
+        "audio",
+        "file"
+      ]
+    },
+    "medium": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  }
+}

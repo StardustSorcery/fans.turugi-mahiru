@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_data_type_scored_video_sets",
+  "info": {
+    "displayName": "Scored Video Set"
+  },
+  "options": {},
+  "attributes": {
+    "key": {
+      "type": "string"
+    },
+    "scoredVideos": {
+      "displayName": "Scored Video",
+      "type": "component",
+      "repeatable": true,
+      "component": "data-type.scored-video"
+    }
+  }
+}
