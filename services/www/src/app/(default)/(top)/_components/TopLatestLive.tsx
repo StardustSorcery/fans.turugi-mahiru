@@ -14,7 +14,7 @@ export default function TopLatestLive({
   return (
     <Box
       component={Paper}
-      elevation={4}
+      variant="outlined"
       display="inline-block"
       sx={{
         ...sx,
