@@ -1,8 +1,10 @@
 import {
   Box,
+  Container,
   Paper,
 } from "@mui/material";
 import Top from "./_components/Top";
+import TabNavigation from "@/components/TabNavigation/TabNavigation";
 
 export default function TopPage() {
   return (
@@ -10,16 +12,26 @@ export default function TopPage() {
       <Top
       />
 
+      <TabNavigation
+        centered
+      />
+
       <Box
-        component={Paper}
-        elevation={6}
-        sx={{
-          minHeight: '100svh',
-          borderBottomRightRadius: 0,
-          borderBottomLeftRadius: 0,
-          mx: 2,
-        }}
+        component="main"
+        my={4}
       >
+        <Container
+          maxWidth="lg"
+        >
+          <Box
+            component={Paper}
+            elevation={6}
+            sx={{
+              minHeight: '100svh',
+            }}
+          >
+          </Box>
+        </Container>
       </Box>
     </>
   );
