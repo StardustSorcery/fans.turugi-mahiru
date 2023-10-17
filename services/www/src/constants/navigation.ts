@@ -36,10 +36,4 @@ export const navigation: NavigationItem[] = [
     labelJA: 'スケジュール',
     href: '/schedule',
   },
-  {
-    label: 'DISCORD',
-    labelEN: 'DISCORD',
-    labelJA: 'Discord サーバー',
-    href: '/discord',
-  },
 ];
