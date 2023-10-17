@@ -24,6 +24,10 @@ export default function TopKeyvisual({
           position: 'relative',
           width: '100%',
           maxWidth: theme => theme.spacing(100),
+          userSelect: 'none',
+          WebkitUserSelect: 'none',
+          MozUserSelect: 'none',
+          msUserSelect: 'none',
         }}
       />
     </Box>

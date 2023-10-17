@@ -57,6 +57,27 @@ export default function Top({
             }}
           />
 
+          <TopKeyvisual
+            sx={{
+              position: 'absolute',
+              top: theme => theme.spacing(8),
+              right: 0,
+              zIndex: 10,
+            }}
+          />
+
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: '50%',
+              width: '100dvw',
+              transform: 'translateX(-50%)',
+              zIndex: 99,
+            }}
+          />
+
           {!isMobile && (
             <TopLatestLive
               sx={{
@@ -69,15 +90,6 @@ export default function Top({
               }}
             />
           )}
-
-          <TopKeyvisual
-            sx={{
-              position: 'absolute',
-              top: theme => theme.spacing(8),
-              right: 0,
-              zIndex: 10,
-            }}
-          />
         </Box>
       </Box>
 
