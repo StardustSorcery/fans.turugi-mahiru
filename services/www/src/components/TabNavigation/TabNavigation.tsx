@@ -26,10 +26,10 @@ export default function TabNavigation({
 >): React.ReactNode {
   const pathname = usePathname();
 
-  const [ value, setValue ] = useState<string | null>(null);
+  const [ value, setValue ] = useState<string | undefined>(undefined);
   useEffect(() => {
     const targetItem = navigation.find(item => pathname.startsWith(item.href));
-    setValue(targetItem?.href || null);
+    setValue(targetItem?.href || undefined);
   }, [
     pathname,
   ]);
@@ -61,10 +61,11 @@ export default function TabNavigation({
           },
           ...TabsProps.sx,
         }}
-        value={value}
+        value={navigation.some(item => item.href === value) && value}
       >
         {navigation.map(item => (
           <TabNavigationTab
+            key={item.href}
             labelEN={item.labelEN}
             labelJA={item.labelJA}
             href={item.href}

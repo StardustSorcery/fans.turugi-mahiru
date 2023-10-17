@@ -31,14 +31,14 @@ const FooterLink = styled((props: LinkProps) => (
     color="inherit"
     {...props}
   />
-))<LinkProps>();
+))<LinkProps>(() => ({}));
 
 const FooterListLink = styled((props: LinkProps) => (
   <Link
     color="inherit"
     {...props}
   />
-))<LinkProps>();
+))<LinkProps>(() => ({}));
 
 const FooterListItemText = (item: {
   label: string;
