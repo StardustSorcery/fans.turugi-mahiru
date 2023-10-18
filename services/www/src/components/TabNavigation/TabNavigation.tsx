@@ -9,6 +9,7 @@ import {
   type BoxProps,
   Tabs,
   type TabsProps,
+  alpha,
 } from "@mui/material";
 import TabNavigationTab from "./TabNavigationTab";
 import { navigation } from "@/constants/navigation";
@@ -51,13 +52,22 @@ export default function TabNavigation({
         variant="scrollable"
         scrollButtons="auto"
         allowScrollButtonsMobile
+        TabIndicatorProps={{
+          children: <span className="MuiTabs-indicatorSpan" />
+        }}
         {...TabsProps}
         sx={{
           '.MuiTabs-indicator': {
-            backgroundColor: theme => theme.palette.mRed.main,
+            display: 'flex',
+            justifyContent: 'center',
+            backgroundColor: 'transparent',
+          },
+          '.MuiTabs-indicatorSpan': {
+            width: theme => `calc(100% - ${theme.shape.borderRadius * 2}px)`,
+            backgroundColor: theme => theme.palette.mPurple.dark,
           },
           '.MuiTab-root.Mui-selected': {
-            color: theme => theme.palette.mRed.main,
+            color: theme => theme.palette.mPurple.dark,
           },
           ...TabsProps.sx,
         }}

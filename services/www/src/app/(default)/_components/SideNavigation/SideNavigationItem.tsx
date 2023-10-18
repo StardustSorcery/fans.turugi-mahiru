@@ -3,6 +3,7 @@ import {
   ListItemButton,
   ListItemProps,
   ListItemText,
+  alpha,
 } from "@mui/material";
 import NextLink, {
   type LinkProps as NextLinkProps,
@@ -38,6 +39,11 @@ export default function SideNavigationItem({
         LinkComponent={NextLink}
         href={href}
         selected={selected}
+        sx={{
+          '&.Mui-selected': {
+            backgroundColor: theme => alpha(theme.palette.mPurple.main, 0.2),
+          },
+        }}
       >
         <ListItemText
           primary={(labelEN && labelJA) ? labelEN : label}
