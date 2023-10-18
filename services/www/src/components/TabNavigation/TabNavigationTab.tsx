@@ -21,6 +21,7 @@ export default function TabNavigationTab({
 }: TabProps<
   'a',
   NextLinkProps & {
+    label?: string;
     labelEN?: string;
     labelJA?: string;
     isHighlighted?: boolean;

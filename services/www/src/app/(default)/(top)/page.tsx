@@ -4,16 +4,19 @@ import {
   Paper,
 } from "@mui/material";
 import Top from "./_components/Top";
-import TabNavigation from "@/components/TabNavigation/TabNavigation";
+import SideNavTriggerWrapper from "./_components/SideNavTriggerWrapper";
+import TabNavigationWrapper from "./_components/TabNavigationWrapper";
 
 export default function TopPage() {
   return (
     <>
+      <SideNavTriggerWrapper
+      />
+
       <Top
       />
 
-      <TabNavigation
-        centered
+      <TabNavigationWrapper
       />
 
       <Box

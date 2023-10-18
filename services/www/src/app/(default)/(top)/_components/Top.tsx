@@ -51,7 +51,7 @@ export default function Top({
           <TopName
             sx={{
               position: 'absolute',
-              top: theme => theme.spacing(4),
+              top: theme => theme.spacing(7),
               left: 0,
               zIndex: 1,
             }}
@@ -60,7 +60,7 @@ export default function Top({
           <TopKeyvisual
             sx={{
               position: 'absolute',
-              top: theme => theme.spacing(8),
+              top: theme => theme.spacing(11),
               right: 0,
               zIndex: 10,
             }}

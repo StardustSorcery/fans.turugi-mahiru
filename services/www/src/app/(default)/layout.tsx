@@ -1,13 +1,21 @@
 import Footer from "@/components/Footer/Footer";
+import { DefaultContextProvider } from "./_components/DefaultContext";
+import SideNavigation from "@/app/(default)/_components/SideNavigation/SideNavigation";
 
-export default function TopLayout({ children }: { children: React.ReactNode }) {
+export default function DefaultLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      {children}
+      <DefaultContextProvider
+      >
+        {children}
 
-      <Footer
-        mt={4}
-      />
+        <Footer
+          mt={4}
+        />
+
+        <SideNavigation
+        />
+      </DefaultContextProvider>
     </>
   )
 }
