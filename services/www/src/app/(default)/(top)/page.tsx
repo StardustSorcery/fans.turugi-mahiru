@@ -6,8 +6,39 @@ import {
 import Top from "./_components/Top";
 import SideNavTriggerWrapper from "./_components/SideNavTriggerWrapper";
 import TabNavigationWrapper from "./_components/TabNavigationWrapper";
+import { type StrapiResponse } from "strapi-sdk-js";
+import type {
+  News,
+  StrapiResponseData,
+} from '@/types/strapi';
 
-export default function TopPage() {
+function fetchLatestNews(): Promise<{
+  data: StrapiResponse<StrapiResponseData<News>> | null;
+  error: Error | null;
+}> {
+  const url = `http://localhost:${process.env.PORT || '80'}/api/news?` + (new URLSearchParams({ page: '1', pageSize: '5' })).toString();
+
+  return fetch(url, { cache: 'no-cache' })
+    .then(resp => (resp.json() as unknown) as StrapiResponse<StrapiResponseData<News>>)
+    .then(data => ({
+      data,
+      error: null,
+    }))
+    .catch((err: Error) => {
+      console.error(err);
+      return {
+        data: null,
+        error: err,
+      };
+    });
+};
+
+export default async function TopPage() {
+  const {
+    data: latestNews,
+    error: latestNewsError,
+  } = await fetchLatestNews();
+
   return (
     <>
       <SideNavTriggerWrapper
@@ -33,6 +64,13 @@ export default function TopPage() {
               minHeight: '100svh',
             }}
           >
+            <pre><code>
+              news: {latestNews ? JSON.stringify(latestNews, null, 2) : '(null)'}
+            </code></pre>
+
+            <pre><code>
+              error: {latestNewsError ? latestNewsError.toString() : '(null)'}
+            </code></pre>
           </Box>
         </Container>
       </Box>

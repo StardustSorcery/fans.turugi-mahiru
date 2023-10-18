@@ -50,4 +50,7 @@ ENV PORT 80
 ENV HOSTNAME "0.0.0.0"
 ENV TZ=Asia/Tokyo
 
+ENV CMS_URL=http://cms:1337/
+ENV CMS_API_TOKEN=""
+
 CMD ["node", "server.js"]

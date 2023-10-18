@@ -19,3 +19,4 @@ services:
     image: localhost/fans_turugi-mahiru/www
     environment:
       TZ: Asia/Tokyo
+      CMS_API_TOKEN: ${WWW_CMS_API_TOKEN}
