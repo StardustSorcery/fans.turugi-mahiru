@@ -29,6 +29,7 @@ export function GET(req: NextRequest): Promise<NextResponse> {
         pageSize,
         withCount: true,
       },
+      sort: 'publishedAt:desc',
     }
   ).then((resp) => {
     console.log('news:', resp);

@@ -2,6 +2,7 @@ import {
   Box,
   Container,
   Paper,
+  Typography,
 } from "@mui/material";
 import Top from "./_components/Top";
 import SideNavTriggerWrapper from "./_components/SideNavTriggerWrapper";
@@ -13,13 +14,13 @@ import type {
 } from '@/types/strapi';
 
 function fetchLatestNews(): Promise<{
-  data: StrapiResponse<StrapiResponseData<News>> | null;
+  data: StrapiResponse<StrapiResponseData<News>[]> | null;
   error: Error | null;
 }> {
   const url = `http://localhost:${process.env.PORT || '80'}/api/news?` + (new URLSearchParams({ page: '1', pageSize: '5' })).toString();
 
   return fetch(url, { cache: 'no-cache' })
-    .then(resp => (resp.json() as unknown) as StrapiResponse<StrapiResponseData<News>>)
+    .then(resp => (resp.json() as unknown) as StrapiResponse<StrapiResponseData<News>[]>)
     .then(data => ({
       data,
       error: null,
@@ -60,17 +61,28 @@ export default async function TopPage() {
           <Box
             component={Paper}
             elevation={6}
-            sx={{
-              minHeight: '100svh',
-            }}
           >
-            <pre><code>
-              news: {latestNews ? JSON.stringify(latestNews, null, 2) : '(null)'}
-            </code></pre>
+            <Typography
+            >
+              最新ニュース
+            </Typography>
 
-            <pre><code>
-              error: {latestNewsError ? latestNewsError.toString() : '(null)'}
-            </code></pre>
+            {(latestNewsError || !latestNews) ? (
+              <Typography
+              >
+                ニュースの取得に失敗しました.
+              </Typography>
+            ) : (
+              <>
+                {latestNews.data.map(newsItem => (
+                  <Typography
+                    key={newsItem.id}
+                  >
+                    {newsItem.attributes.title}
+                  </Typography>
+                ))}
+              </>
+            )}
           </Box>
         </Container>
       </Box>
