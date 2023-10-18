@@ -1,9 +1,9 @@
-import TabNavigation from "@/components/TabNavigation/TabNavigation";
+import CommonHeader from "./_components/CommonHeader";
 
 export default function CommonLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <TabNavigation
+      <CommonHeader
       />
 
       {children}

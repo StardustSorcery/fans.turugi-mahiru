@@ -10,6 +10,7 @@ import {
   List,
   type DrawerProps,
   Box,
+  Divider,
 } from "@mui/material";
 import { useDefaultContext } from "@/app/(default)/_components/DefaultContext";
 import { navigation } from "@/constants/navigation";
@@ -63,9 +64,6 @@ export default function SideNavigation({
       <Box
         px={2}
         py={1}
-        sx={{
-          backgroundColor: theme => theme.palette.background.default,
-        }}
       >
         <Box
           component={NextLink}
@@ -87,6 +85,9 @@ export default function SideNavigation({
           />
         </Box>
       </Box>
+
+      <Divider
+      />
 
       <List
         dense
