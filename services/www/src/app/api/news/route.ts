@@ -6,7 +6,6 @@ import type {
 } from '@/types/strapi';
 
 export function GET(req: NextRequest): Promise<NextResponse> {
-  console.log(strapi.axios.defaults.headers)
   const params = req.nextUrl.searchParams;
 
   const page = Number(params.get('page') || '1');
@@ -32,7 +31,6 @@ export function GET(req: NextRequest): Promise<NextResponse> {
       sort: 'publishedAt:desc',
     }
   ).then((resp) => {
-    console.log('news:', resp);
     return NextResponse.json(resp);
   }).catch(err => {
     console.error(err);

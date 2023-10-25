@@ -1,17 +1,19 @@
+import NextLink from 'next/link';
 import {
   Box,
   Container,
+  Divider,
+  List,
   Paper,
   Typography,
 } from "@mui/material";
 import Top from "./_components/Top";
 import SideNavTriggerWrapper from "./_components/SideNavTriggerWrapper";
 import TabNavigationWrapper from "./_components/TabNavigationWrapper";
-import { type StrapiResponse } from "strapi-sdk-js";
-import type {
-  News,
-  StrapiResponseData,
-} from '@/types/strapi';
+import Heading1 from '@/components/Heading/Heading1';
+import { StrapiResponse } from 'strapi-sdk-js';
+import { News, StrapiResponseData } from '@/types/strapi';
+import NewsItem from '@/components/News/NewsItem';
 
 function fetchLatestNews(): Promise<{
   data: StrapiResponse<StrapiResponseData<News>[]> | null;
@@ -62,27 +64,35 @@ export default async function TopPage() {
             component={Paper}
             elevation={6}
           >
-            <Typography
+            <Heading1
+              icon="🩹"
+              text="最新ニュース"
+            />
+            <Divider
+            />
+            <Box
             >
-              最新ニュース
-            </Typography>
-
-            {(latestNewsError || !latestNews) ? (
-              <Typography
-              >
-                ニュースの取得に失敗しました.
-              </Typography>
-            ) : (
-              <>
-                {latestNews.data.map(newsItem => (
-                  <Typography
-                    key={newsItem.id}
-                  >
-                    {newsItem.attributes.title}
-                  </Typography>
-                ))}
-              </>
-            )}
+              {(latestNewsError || !latestNews) ? (
+                <Typography
+                  align="center"
+                  component="p"
+                  variant="subtitle1"
+                >
+                  ニュースの取得に失敗しました.
+                </Typography>
+              ) : (
+                <List
+                >
+                  {latestNews.data.map(newsItem => (
+                    <NewsItem
+                      key={newsItem.id}
+                      newsItem={newsItem}
+                      divider
+                    />
+                  ))}
+                </List>
+              )}
+            </Box>
           </Box>
         </Container>
       </Box>

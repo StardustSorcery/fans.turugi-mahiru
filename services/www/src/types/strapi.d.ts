@@ -6,15 +6,32 @@ export type StrapiResponseData<T> = {
   };
 };
 
+export interface StrapiMedia {
+  url: string;
+  width: number;
+  height: number;
+  mime: string;
+  ext: string;
+}
+
 export interface News {
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
   title: string;
   name: string;
   uniqueName: string;
+  thumbnail: {
+    data: StrapiResponseData<StrapiMedia> | null;
+  };
   body: string;
   targetServices: {
+    id: number;
     value: string;
   }[];
-  newsTags: NewsTag[];
+  newsTags: {
+    data: StrapiResponseData<NewsTag>[];
+  };
 }
 
 export interface NewsTag {

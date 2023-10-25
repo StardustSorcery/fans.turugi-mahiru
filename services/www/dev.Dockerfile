@@ -2,6 +2,10 @@
 FROM node:18-alpine AS base
 ENV NPM_CONFIG_UPDATE_NOTIFIER false
 
+ARG CMS_PUBLIC_URL=http://cms.turugi-mahiru.fans.127.0.0.1.nip.io:8080/
+ENV CMS_PUBLIC_URL=${CMS_PUBLIC_URL}
+ENV NEXT_PUBLIC_CMS_PUBLIC_URL=${CMS_PUBLIC_URL}
+
 ######## RUNNER ########
 FROM base AS runner
 RUN apk add tini tzdata
