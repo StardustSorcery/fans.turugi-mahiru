@@ -13,7 +13,7 @@ export default function Heading1({
 }: BoxProps<
   any,
   {
-    icon: string;
+    icon?: string;
     text: React.ReactNode;
   }
 >) {
@@ -29,23 +29,25 @@ export default function Heading1({
         ...props.sx,
       }}
     >
-      <Typography
-        sx={{
-          ...notoEmoji.style,
-          fontSize: theme => theme.typography.h4.fontSize,
-          color: theme => theme.palette.text.secondary,
-          mr: 1,
-          px: 1,
-        }}
-      >
-        {icon}
-      </Typography>
+      {icon && (
+        <Typography
+          sx={{
+            ...notoEmoji.style,
+            fontSize: theme => theme.typography.h4.fontSize,
+            color: theme => theme.palette.text.secondary,
+            px: 1,
+          }}
+        >
+          {icon}
+        </Typography>
+      )}
 
       <Typography
         component="h1"
         sx={{
           fontSize: theme => theme.typography.h4.fontSize,
           fontWeight: theme => theme.typography.fontWeightBold,
+          ml: 1,
         }}
       >
         {text}

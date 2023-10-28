@@ -52,3 +52,9 @@ export interface NewsTag {
   displayName: string;
   news: News[];
 }
+
+export interface Privacy {
+  createdAt: string;
+  updatedAt: string;
+  body: string;
+}
