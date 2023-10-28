@@ -66,28 +66,10 @@ export default async function TopPage() {
             component={Paper}
             elevation={6}
           >
-            <Stack
-              flexDirection="row"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <Heading1
-                icon="🩹"
-                text="最新ニュース"
-              />
-
-              <Button
-                LinkComponent={NextLink}
-                href="/news"
-                variant="outlined"
-                color="secondary"
-                sx={{
-                  mx: 2,
-                }}
-              >
-                ニュース 一覧
-              </Button>
-            </Stack>
+            <Heading1
+              icon="🩹"
+              text="最新ニュース"
+            />
             <Divider
             />
             <Box
@@ -112,6 +94,25 @@ export default async function TopPage() {
                   ))}
                 </List>
               )}
+
+              <Stack
+                px={2}
+                pt={1}
+                pb={2}
+                alignItems="center"
+              >
+                <Button
+                  LinkComponent={NextLink}
+                  href="/news"
+                  variant="outlined"
+                  color="secondary"
+                  sx={{
+                    mr: 1,
+                  }}
+                >
+                  すべてのニュースを見る
+                </Button>
+              </Stack>
             </Box>
           </Box>
         </Container>
