@@ -1,10 +1,12 @@
 import NextLink from 'next/link';
 import {
   Box,
+  Button,
   Container,
   Divider,
   List,
   Paper,
+  Stack,
   Typography,
 } from "@mui/material";
 import Top from "./_components/Top";
@@ -64,10 +66,28 @@ export default async function TopPage() {
             component={Paper}
             elevation={6}
           >
-            <Heading1
-              icon="🩹"
-              text="最新ニュース"
-            />
+            <Stack
+              flexDirection="row"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Heading1
+                icon="🩹"
+                text="最新ニュース"
+              />
+
+              <Button
+                LinkComponent={NextLink}
+                href="/news"
+                variant="outlined"
+                color="secondary"
+                sx={{
+                  mx: 2,
+                }}
+              >
+                ニュース 一覧
+              </Button>
+            </Stack>
             <Divider
             />
             <Box

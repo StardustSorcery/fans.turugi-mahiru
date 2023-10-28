@@ -1,5 +1,7 @@
 'use client';
-import NextLink from "next/link";
+import NextLink, {
+  LinkProps as NextLinkProps,
+} from "next/link";
 import {
   ListItem,
   type ListItemProps,
@@ -11,6 +13,7 @@ import {
   Box,
   Paper,
   useMediaQuery,
+  PaperProps,
 } from "@mui/material";
 import type {
   News,
@@ -42,7 +45,8 @@ export default function NewsItem({
       }}
     >
       <Box
-        component={Paper}
+        component={(props: PaperProps<'a', NextLinkProps>) => <Paper component={NextLink} {...props} />}
+        href={`/news/${newsItem.attributes.name}`}
         variant="outlined"
         sx={isMobile ? {
           aspectRatio: '16/9',
