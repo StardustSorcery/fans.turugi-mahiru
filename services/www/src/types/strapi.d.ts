@@ -1,3 +1,17 @@
+export interface StrapiResponseMeta {
+  pagination?: {
+    page: number;
+    pageSize: number;
+    pageCount: number;
+    total: number;
+  } & {
+    start: number;
+    limit: number;
+    total: number;
+  };
+  [key: string]: any;
+}
+
 export type StrapiResponseData<T> = {
   id: number;
   attributes: T;
