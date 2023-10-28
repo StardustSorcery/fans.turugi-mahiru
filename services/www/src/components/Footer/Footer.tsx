@@ -20,6 +20,7 @@ import {
   useMediaQuery,
   ListItemIcon,
 } from "@mui/material";
+import { notoEmoji } from '@/app/fonts';
 
 const FooterSectionTitle = styled(Typography)<TypographyProps>(({ theme }) => ({
   fontSize: theme.typography.subtitle1.fontSize,
@@ -52,6 +53,7 @@ const FooterListItemText = (item: {
       component: FooterListLink,
       display: 'inline-block',
       href: item.href,
+      fontFamily: theme => `${notoEmoji.style.fontFamily.split(',')[0]}, ${theme.typography.fontFamily}`,
       ...(item.targetIsBlank && { target: '_blank' })
     } : {
       sx: {
