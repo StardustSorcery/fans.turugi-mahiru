@@ -50,6 +50,7 @@ const FooterListItemText = (item: {
     primary={item.label}
     primaryTypographyProps={item.href ? {
       component: FooterListLink,
+      display: 'inline-block',
       href: item.href,
       ...(item.targetIsBlank && { target: '_blank' })
     } : {
@@ -298,7 +299,7 @@ export default function Footer({
             align="center"
           >
             <FooterLink
-              href="https://ggtk.app/privacy"
+              href="/privacy"
               target="_blank"
             >
               プライバシーポリシー
