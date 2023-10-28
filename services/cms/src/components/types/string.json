@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_types_strings",
+  "info": {
+    "displayName": "Short Text",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "value": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

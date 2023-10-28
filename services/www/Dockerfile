@@ -2,6 +2,10 @@
 FROM node:18-alpine AS base
 ENV NPM_CONFIG_UPDATE_NOTIFIER false
 
+ARG CMS_PUBLIC_URL=https://cms.turugi-mahiru.fans/
+ENV CMS_PUBLIC_URL=${CMS_PUBLIC_URL}
+ENV NEXT_PUBLIC_CMS_PUBLIC_URL=${CMS_PUBLIC_URL}
+
 ######## DEV DEPS ########
 # Install dependencies only when needed
 FROM base AS dev-deps
@@ -49,5 +53,8 @@ EXPOSE 80
 ENV PORT 80
 ENV HOSTNAME "0.0.0.0"
 ENV TZ=Asia/Tokyo
+
+ENV CMS_URL=http://cms:1337/
+ENV CMS_API_TOKEN=""
 
 CMD ["node", "server.js"]
