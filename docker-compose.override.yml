@@ -23,6 +23,13 @@ services:
     ports:
       - ${DB_PORT:-3306}:3306
 
+  redis:
+    image: redis:6.2.14-alpine
+    volumes:
+      - redis_data:/data
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+
   cms:
     depends_on:
       - db
@@ -43,6 +50,8 @@ services:
     build:
       context: ./services/ytlive-sync
       dockerfile: Dockerfile
+    environment:
+      REDIS_URI: ${YTLIVE_SYNC_REDIS_URI:-redis://redis/1}
 
   # www
   www:
@@ -60,3 +69,4 @@ services:
 
 volumes:
   db_data:
+  redis_data:
