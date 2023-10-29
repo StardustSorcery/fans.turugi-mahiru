@@ -19,7 +19,7 @@ services:
     image: localhost/fans_turugi-mahiru/ytlive-sync
     environment:
       TZ: Asia/Tokyo
-      CRON_RULE: ${YTLIVE_SYNC_CRON_RULE:-"* * * * * */30"}
+      CRON_RULE: ${YTLIVE_SYNC_CRON_RULE:-"*/30 * * * * *"}
       CMS_API_TOKEN: ${YTLIVE_SYNC_CMS_API_TOKEN}
 
   # www

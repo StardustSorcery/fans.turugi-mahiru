@@ -46,7 +46,7 @@ USER node
 
 ENV TZ=Asia/Tokyo
 
-ENV CRON_RULE "* * * * * */30"
+ENV CRON_RULE "*/30 * * * * *"
 ENV CMS_URL http://cms:1337/
 ENV CMS_API_TOKEN ""
 

@@ -1,16 +1,23 @@
 import * as log4js from '@/logger';
 import strapi from '@/strapi';
+import scheduler from 'node-schedule';
 
 const logger = log4js.init().getLogger();
 
 async function main() {
-  logger.debug('Hello!');
-  const privacy = await strapi.find('privacy');
-  logger.debug(JSON.stringify(privacy.data));
+  logger.info('[System] Launched.');
+
+  scheduler.scheduleJob(
+    process.env.CRON_RULE || '*/30 * * * * *',
+    () => {
+      const now = new Date();
+      logger.debug(`Hello, it's ${now.toLocaleTimeString()} !`);
+    }
+  );
 }
 
 async function shutdown(code: number) {
-  logger.info('shutting down...');
+  logger.info(`[System] Shutting down... (${code})`);
 
   return process.exit(code);
 }
@@ -30,6 +37,6 @@ catch(err) {
   shutdown(1);
 }
 
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
-process.on('SIGQUIT', shutdown);
+process.on('SIGINT', () => shutdown(0));
+process.on('SIGTERM', () => shutdown(0));
+process.on('SIGQUIT', () => shutdown(0));
