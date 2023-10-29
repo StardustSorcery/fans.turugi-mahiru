@@ -14,6 +14,14 @@ services:
       API_TOKEN_SALT: ${CMS_API_TOKEN_SALT}
       APP_KEYS: ${CMS_APP_KEYS}
 
+  # ytlive
+  ytlive-sync:
+    image: localhost/fans_turugi-mahiru/ytlive-sync
+    environment:
+      TZ: Asia/Tokyo
+      CRON_RULE: ${YTLIVE_SYNC_CRON_RULE:-"* * * * * */30"}
+      CMS_API_TOKEN: ${YTLIVE_SYNC_CMS_API_TOKEN}
+
   # www
   www:
     image: localhost/fans_turugi-mahiru/www
