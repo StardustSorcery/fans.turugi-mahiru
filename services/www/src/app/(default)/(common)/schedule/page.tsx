@@ -1,6 +1,8 @@
 import Heading1 from "@/components/Heading/Heading1";
+import Heading2 from "@/components/Heading/Heading2";
 import VideoListItem from "@/components/Video/VideoListItem";
 import { LiveScheduleByDate } from "@/types/schedule";
+import { StrapiResponseData, Video } from "@/types/strapi";
 import date2str from "@/utils/date2str";
 import {
   Box,
@@ -9,6 +11,31 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
+import { StrapiResponse } from "strapi-sdk-js";
+
+function fetchInProgressLiveStreams(): Promise<{
+  data: StrapiResponse<StrapiResponseData<Video>[]> | null;
+  error: Error | null;
+}> {
+  const url = `http://localhost:${process.env.PORT || '80'}/api/schedule/in-progress`;
+
+  return fetch(url, { cache: 'no-cache' })
+    .then(resp => {
+      if(!resp.ok) throw new Error(resp.status.toString());
+      else return (resp.json() as unknown) as StrapiResponse<StrapiResponseData<Video>[]>;
+    })
+    .then(data => ({
+      data,
+      error: null,
+    }))
+    .catch((err: Error) => {
+      console.error('schedule req', err);
+      return {
+        data: null,
+        error: err,
+      };
+    });
+};
 
 function fetchSchedule(): Promise<{
   data: LiveScheduleByDate[] | null;
@@ -27,18 +54,7 @@ function fetchSchedule(): Promise<{
   return fetch(url, { cache: 'no-cache' })
     .then(resp => {
       if(!resp.ok) throw new Error(resp.status.toString());
-      else return (resp.json() as unknown) as (Omit<LiveScheduleByDate, 'date'> & { date: string })[];
-    })
-    .then(data => {
-      const converted: LiveScheduleByDate[] = [];
-      for(const bucket of data) {
-        const convertedBucket: LiveScheduleByDate = {
-          ...bucket,
-          date: new Date(bucket.date),
-        };
-        converted.push(convertedBucket);
-      }
-      return converted;
+      else return (resp.json() as unknown) as LiveScheduleByDate[];
     })
     .then(data => ({
       data,
@@ -54,6 +70,11 @@ function fetchSchedule(): Promise<{
 };
 
 export default async function SchedulePage() {
+  const {
+    data: inProgressLiveStreams,
+    error: inProgressLiveStreamsError,
+  } = await fetchInProgressLiveStreams();
+
   const {
     data: schedule,
     error: scheduleError,
@@ -77,7 +98,7 @@ export default async function SchedulePage() {
               text="スケジュール"
             />
 
-            {(scheduleError || !schedule) ? (
+            {(inProgressLiveStreamsError || !inProgressLiveStreams || scheduleError || !schedule) ? (
               <Typography
                 align="center"
                 component="p"
@@ -87,37 +108,52 @@ export default async function SchedulePage() {
               </Typography>
             ) : (
               <>
-                {/*schedule.inProgress.length > 0 && (
+                {inProgressLiveStreams.data.length > 0 && (
                   <Box
                     component="section"
                   >
-                    <Typography
-                    >
-                      ライブ配信中
-                    </Typography>
+                    <Heading2
+                      icon="▶"
+                      text="現在ライブ配信中"
+                      sx={{
+                        mx: 2,
+                      }}
+                    />
 
                     <List
                     >
-                      <VideoListItem
-                        video={schedule.inProgress[0]}
-                      />
+                      {inProgressLiveStreams.data.map(video => (
+                        <VideoListItem
+                          key={`InProgress#${video.id}`}
+                          video={video}
+                        />
+                      ))}
                     </List>
                   </Box>
-                )*/}
+                )}
 
                 {schedule.map((bucket) => (
-                  <>
-                    <Typography
-                    >
-                      {`${date2str(bucket.date)} (${['日','月','火','水','木','金','土'][bucket.date.getDay()]})`}
-                    </Typography>
+                  <Box
+                    component="section"
+                    key={bucket.date}
+                  >
+                    <Heading2
+                      text={`${date2str(new Date(bucket.date))} (${['日','月','火','水','木','金','土'][new Date(bucket.date).getDay()]})`}
+                      sx={{
+                        mx: 2,
+                      }}
+                    />
+
                     <List
                     >
-                      <VideoListItem
-                        video={bucket.videos[0]}
-                      />
+                      {bucket.videos.map(video => (
+                        <VideoListItem
+                          key={`Schedule#${video.id}`}
+                          video={bucket.videos[0]}
+                        />
+                      ))}
                     </List>
-                  </>
+                  </Box>
                 ))}
               </>
             )}

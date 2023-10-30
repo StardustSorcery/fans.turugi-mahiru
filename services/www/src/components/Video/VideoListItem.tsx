@@ -28,6 +28,14 @@ export default function VideoListItem({
       {...props}
     >
       <ListItemButton
+        LinkComponent="a"
+        target="_blank"
+        href={(() => {
+          switch(video.attributes.provider) {
+            default: return '#';
+            case 'youtube': return `https://www.youtube.com/watch?v=${video.attributes.videoId}`;
+          }
+        })()}
       >
         <Box
           component={Paper}
@@ -73,7 +81,7 @@ export default function VideoListItem({
                   <Typography
                     component="span"
                     sx={{
-                      fontSize: theme => theme.typography.subtitle1.fontSize,
+                      fontSize: theme => theme.typography.subtitle2.fontSize,
                       fontWeight: theme => theme.typography.fontWeightRegular,
                     }}
                   >

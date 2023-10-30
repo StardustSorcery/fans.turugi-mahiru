@@ -35,6 +35,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
           'thumbnails',
           'auhtor',
         ],
+        sort: 'scheduledStartsAt:asc',
+        pagination: {
+          start: 0,
+          limit: 100,
+          withCount: false,
+        },
       }
     )
     .then((resp) => {
@@ -42,7 +48,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
       for(const video of resp.data) {
         const {
-          isInProgressLiveStream,
           scheduledStartsAt: _scheduledStartsAt,
         } = video.attributes;
         const scheduledStartsAt = _scheduledStartsAt ? new Date(_scheduledStartsAt) : null;
@@ -50,12 +55,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         if(!scheduledStartsAt) {
           continue;
         }
+        
+        const scheduledStartsAtZero = new Date(scheduledStartsAt.getFullYear(), scheduledStartsAt.getMonth(), scheduledStartsAt.getDate());
 
         const dateBucket = (() => {
-          const _dateBucket = schedule.find(e => e.date.getTime() === scheduledStartsAt.getTime());
+          const _dateBucket = schedule.find(e => e.date === scheduledStartsAtZero.toISOString());
           if(_dateBucket) return _dateBucket;
           const _newDateBucket: LiveScheduleByDate = {
-            date: new Date(scheduledStartsAt.getFullYear(), scheduledStartsAt.getMonth(), scheduledStartsAt.getDate()),
+            date: scheduledStartsAtZero.toISOString(),
             videos: [],
           };
           schedule.push(_newDateBucket);

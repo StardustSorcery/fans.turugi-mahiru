@@ -1,6 +1,6 @@
 import { StrapiResponseData, Video } from "./strapi";
 
 export interface LiveScheduleByDate {
-  date: Date;
+  date: string;
   videos: StrapiResponseData<Video>[];
 }
