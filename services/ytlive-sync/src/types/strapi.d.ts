@@ -28,37 +28,6 @@ export interface StrapiMedia {
   ext: string;
 }
 
-export interface News {
-  createdAt: string;
-  updatedAt: string;
-  publishedAt: string;
-  title: string;
-  name: string;
-  uniqueName: string;
-  thumbnail: {
-    data: StrapiResponseData<StrapiMedia> | null;
-  };
-  body: string;
-  targetServices: {
-    id: number;
-    value: string;
-  }[];
-  newsTags: {
-    data: StrapiResponseData<NewsTag>[];
-  };
-}
-
-export interface NewsTag {
-  displayName: string;
-  news: News[];
-}
-
-export interface Privacy {
-  createdAt: string;
-  updatedAt: string;
-  body: string;
-}
-
 export interface Video {
   provider: string;
   videoId: string;

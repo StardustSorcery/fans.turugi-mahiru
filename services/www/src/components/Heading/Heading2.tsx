@@ -6,7 +6,7 @@ import {
   Typography,
 } from "@mui/material";
 
-export default function Heading1({
+export default function Heading2({
   icon,
   text,
   ...props
@@ -26,6 +26,11 @@ export default function Heading1({
         alignItems: 'center',
         py: 1,
         px: 1,
+        borderWidth: '0 0 1px 0',
+        borderStyle: 'solid',
+        borderColor: theme => theme.palette.mPurple.main,
+        padding: theme => theme.spacing(.5, 0, .5, 1.5),
+        margin: theme => theme.spacing(2, 0, 0, 0),
         ...props.sx,
       }}
     >
@@ -33,7 +38,7 @@ export default function Heading1({
         <Typography
           sx={{
             fontFamily: notoEmoji.style.fontFamily,
-            fontSize: theme => theme.typography.h4.fontSize,
+            fontSize: theme => theme.typography.h6.fontSize,
             color: theme => theme.palette.text.secondary,
             px: 1,
           }}
@@ -43,9 +48,9 @@ export default function Heading1({
       )}
 
       <Typography
-        component="h1"
+        component="h2"
         sx={{
-          fontSize: theme => theme.typography.h4.fontSize,
+          fontSize: theme => theme.typography.h6.fontSize,
           fontWeight: theme => theme.typography.fontWeightBold,
           ml: 1,
         }}

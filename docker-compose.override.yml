@@ -23,6 +23,13 @@ services:
     ports:
       - ${DB_PORT:-3306}:3306
 
+  redis:
+    image: redis:6.2.14-alpine
+    volumes:
+      - redis_data:/data
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+
   cms:
     depends_on:
       - db
@@ -33,6 +40,18 @@ services:
         PUBLIC_URL: http://cms.turugi-mahiru.fans.127.0.0.1.nip.io:${HTTP_PORT:-8080}/
     volumes:
       - ./services/cms:/app
+
+  # ytlive
+  ytlive-sync:
+    profiles:
+      - ytlive
+    depends_on:
+      - cms
+    build:
+      context: ./services/ytlive-sync
+      dockerfile: Dockerfile
+    environment:
+      REDIS_URI: ${YTLIVE_SYNC_REDIS_URI:-redis://redis/1}
 
   # www
   www:
@@ -50,3 +69,4 @@ services:
 
 volumes:
   db_data:
+  redis_data:

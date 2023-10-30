@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_videos_authors",
+  "info": {
+    "displayName": "Author"
+  },
+  "options": {},
+  "attributes": {
+    "authorId": {
+      "type": "string",
+      "required": false
+    },
+    "title": {
+      "type": "string"
+    }
+  }
+}

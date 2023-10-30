@@ -9,11 +9,18 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import TopLatestLive from "./TopLatestLive";
+import { Video } from "@/types/strapi";
 
 export default function Top({
+  latestLiveStream,
   sx = {},
   ...props
-}: ContainerProps): React.ReactNode {
+}: ContainerProps<
+  any,
+  {
+    latestLiveStream: Video | null;
+  }
+>): React.ReactNode {
   const isMobile = useMediaQuery('(max-width:809px)'); // iPad 7 縦向き未満をモバイル判定
 
   return (
@@ -78,8 +85,9 @@ export default function Top({
             }}
           />
 
-          {!isMobile && (
+          {!isMobile && latestLiveStream && (
             <TopLatestLive
+              video={latestLiveStream}
               sx={{
                 position: 'absolute',
                 bottom: theme => theme.spacing(4),
@@ -93,8 +101,9 @@ export default function Top({
         </Box>
       </Box>
 
-      {isMobile && (
+      {isMobile && latestLiveStream && (
         <TopLatestLive
+          video={latestLiveStream}
           sx={{
             width:'100%',
           }}
