@@ -1,16 +1,15 @@
-import {
-  useState,
-} from 'react';
 import NextLink, {
   LinkProps as NextLinkProps,
 } from 'next/link';
 import {
   Tab,
-  alpha,
   type TabProps,
   Typography,
   Stack,
 } from "@mui/material";
+import {
+  alpha,
+} from '@mui/material/styles';
 
 export default function TabNavigationTab({
   label,

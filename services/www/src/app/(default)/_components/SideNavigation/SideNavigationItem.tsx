@@ -3,8 +3,10 @@ import {
   ListItemButton,
   ListItemProps,
   ListItemText,
-  alpha,
 } from "@mui/material";
+import {
+  alpha,
+} from '@mui/material/styles';
 import NextLink, {
   type LinkProps as NextLinkProps,
 } from "next/link";

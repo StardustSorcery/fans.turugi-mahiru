@@ -90,7 +90,7 @@ export default function VideoListItem({
                 </Box>
               )}
 
-              {video.attributes.scheduledStartsAt && (
+              {video.attributes.isUpcomingLiveStream && video.attributes.scheduledStartsAt && (
                 <Box
                   mb={1}
                 >

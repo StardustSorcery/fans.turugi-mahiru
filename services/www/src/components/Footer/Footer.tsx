@@ -9,17 +9,19 @@ import {
   type BoxProps,
   Typography,
   Link,
-  alpha,
   Container,
   List,
   ListItem,
-  styled,
   type LinkProps,
   ListItemText,
   type TypographyProps,
   useMediaQuery,
   ListItemIcon,
 } from "@mui/material";
+import {
+  alpha,
+  styled,
+} from '@mui/material/styles';
 import { notoEmoji } from '@/app/fonts';
 
 const FooterSectionTitle = styled(Typography)<TypographyProps>(({ theme }) => ({
@@ -42,8 +44,8 @@ const FooterListLink = styled((props: LinkProps) => (
 ))<LinkProps>(() => ({}));
 
 const FooterListItemText = (item: {
-  label: string;
-  subLabel?: string;
+  label: React.ReactNode;
+  subLabel?: React.ReactNode;
   href?: string;
   targetIsBlank?: boolean;
 }) => (
@@ -53,8 +55,7 @@ const FooterListItemText = (item: {
       component: FooterListLink,
       display: 'inline-block',
       href: item.href,
-      fontFamily: theme => `${notoEmoji.style.fontFamily.split(',')[0]}, ${theme.typography.fontFamily}`,
-      ...(item.targetIsBlank && { target: '_blank' })
+      ...(item.targetIsBlank && { target: '_blank' }),
     } : {
       sx: {
         color: 'inherit',
@@ -129,7 +130,20 @@ export default function Footer({
                   targetIsBlank: true,
                 },
                 {
-                  label: '剣城まひるの救急箱🩹',
+                  label: (
+                      <>
+                        剣城まひるの救急箱
+                        <Box
+                          component="span"
+                          suppressHydrationWarning
+                          sx={{
+                            fontFamily: notoEmoji.style.fontFamily,
+                          }}
+                        >
+                          🩹
+                        </Box>
+                      </>
+                    ),
                   subLabel: 'Discord サーバー',
                   href: '/discord',
                   targetIsBlank: false,
@@ -141,7 +155,7 @@ export default function Footer({
                 }
               ].map(item => (
                 <ListItem
-                  key={item.label}
+                  key={item.href}
                 >
                   <FooterListItemText
                     {...item}
