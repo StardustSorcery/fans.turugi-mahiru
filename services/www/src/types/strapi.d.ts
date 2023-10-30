@@ -58,3 +58,30 @@ export interface Privacy {
   updatedAt: string;
   body: string;
 }
+
+export interface Video {
+  provider: string;
+  videoId: string;
+  type: 'LiveStream' | 'UploadedVideo';
+  title: string;
+  description: string;
+  thumbnails: {
+    url: string;
+    width: number;
+    height: number;
+  }[];
+  author: {
+    authorId: string | null;
+    title: string | null;
+  };
+  isInProgressLiveStream: boolean;
+  isUpcomingLiveStream: boolean;
+  videoPublishedAt: string | null;
+  scheduledStartsAt: string | null;
+  scheduledEndsAt: string | null;
+  startedAt: string | null;
+  endedAt: string | null;
+  client: string;
+  etag: string;
+  raw: any;
+}
