@@ -14,8 +14,32 @@ import SideNavTriggerWrapper from "./_components/SideNavTriggerWrapper";
 import TabNavigationWrapper from "./_components/TabNavigationWrapper";
 import Heading1 from '@/components/Heading/Heading1';
 import { StrapiResponse } from 'strapi-sdk-js';
-import { News, StrapiResponseData } from '@/types/strapi';
+import { News, StrapiResponseData, Video } from '@/types/strapi';
 import NewsItem from '@/components/News/NewsItem';
+
+function fetchLatestLiveStream(): Promise<{
+  data: StrapiResponseData<Video> | null;
+  error: Error | null;
+}> {
+  const url = `http://localhost:${process.env.PORT || '80'}/api/schedule/latest`;
+
+  return fetch(url, { cache: 'no-cache' })
+    .then(resp => {
+      if(!resp.ok) throw new Error(resp.status.toString());
+      else return (resp.json() as unknown) as StrapiResponseData<Video> | null;
+    })
+    .then(data => ({
+      data,
+      error: null,
+    }))
+    .catch((err: Error) => {
+      console.error('schedule req', err);
+      return {
+        data: null,
+        error: err,
+      };
+    });
+};
 
 function fetchLatestNews(): Promise<{
   data: StrapiResponse<StrapiResponseData<News>[]> | null;
@@ -40,6 +64,11 @@ function fetchLatestNews(): Promise<{
 
 export default async function TopPage() {
   const {
+    data: latestLiveStream,
+    error: latestLiveStreamError,
+  } = await fetchLatestLiveStream();
+
+  const {
     data: latestNews,
     error: latestNewsError,
   } = await fetchLatestNews();
@@ -50,6 +79,7 @@ export default async function TopPage() {
       />
 
       <Top
+        latestLiveStream={(latestLiveStreamError || !latestLiveStream) ? null : latestLiveStream.attributes}
       />
 
       <TabNavigationWrapper
