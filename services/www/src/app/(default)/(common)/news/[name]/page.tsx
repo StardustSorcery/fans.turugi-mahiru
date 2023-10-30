@@ -42,6 +42,30 @@ function fetchNewsItem(name: string): Promise<{
     });
 };
 
+export async function generateMetadata({
+  params,
+}: {
+  params: { name: string }
+}
+) {
+  const {
+    data: newsItem,
+    error: newsItemError,
+  } = await fetchNewsItem(params.name);
+
+  if(newsItemError || !newsItem) {
+    return {
+      title: '剣城まひる.fans - 非公式ファンサイト',
+      description: '個人VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
+    };
+  }
+
+  return {
+    title: `${newsItem.data.attributes.title} | ニュース |剣城まひる.fans - 非公式ファンサイト`,
+    description: '個人VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
+  };
+};
+
 export default async function NewsItemPage({
   params,
 }: {

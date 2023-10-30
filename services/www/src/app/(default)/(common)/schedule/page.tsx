@@ -13,6 +13,11 @@ import {
 } from "@mui/material";
 import { StrapiResponse } from "strapi-sdk-js";
 
+export const metadata = {
+  title: 'スケジュール | 剣城まひる.fans - 非公式ファンサイト',
+  description: '個人VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
+};
+
 function fetchInProgressLiveStreams(): Promise<{
   data: StrapiResponse<StrapiResponseData<Video>[]> | null;
   error: Error | null;

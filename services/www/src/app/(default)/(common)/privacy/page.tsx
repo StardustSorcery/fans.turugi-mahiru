@@ -10,6 +10,11 @@ import { Privacy, StrapiResponseData } from "@/types/strapi";
 import date2str from "@/utils/date2str";
 import MD2Material from "@/components/MD2Material/MD2Material";
 
+export const metadata = {
+  title: 'プライバシーポリシー | 剣城まひる.fans - 非公式ファンサイト',
+  description: '個人VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
+};
+
 function fetchPrivacy(): Promise<{
   data: StrapiResponse<StrapiResponseData<Privacy>> | null;
   error: Error | null;

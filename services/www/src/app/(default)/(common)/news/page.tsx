@@ -12,6 +12,11 @@ import { StrapiResponse } from "strapi-sdk-js";
 import { News, StrapiResponseData, StrapiResponseMeta } from "@/types/strapi";
 import NewsItem from "@/components/News/NewsItem";
 
+export const metadata = {
+  title: 'ニュース | 剣城まひる.fans - 非公式ファンサイト',
+  description: '個人VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
+};
+
 function fetchNews(page: number): Promise<{
   data: StrapiResponse<StrapiResponseData<News>[]> | null;
   error: Error | null;
