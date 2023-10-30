@@ -61,7 +61,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${newsItem.data.attributes.title} | ニュース |剣城まひる.fans - 非公式ファンサイト`,
+    title: `${newsItem.data.attributes.title} | ニュース | 剣城まひる.fans - 非公式ファンサイト`,
     description: '個人VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
   };
 };
