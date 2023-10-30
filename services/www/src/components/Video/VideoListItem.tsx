@@ -10,6 +10,7 @@ import {
   Paper,
   Stack,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import * as size from '@/utils/size';
 import time2str from "@/utils/time2str";
@@ -23,6 +24,8 @@ export default function VideoListItem({
     video: StrapiResponseData<Video>;
   }
 >) {
+  const isMobile = useMediaQuery('(max-width:809px)'); // iPad 7 縦向き未満をモバイル判定
+
   return (
     <ListItem
       {...props}
@@ -36,22 +39,32 @@ export default function VideoListItem({
             case 'youtube': return `https://www.youtube.com/watch?v=${video.attributes.videoId}`;
           }
         })()}
+        sx={isMobile ? {
+          flexDirection: 'column',
+          alignItems: 'stretch',
+        } : {
+        }}
       >
         <Box
           component={Paper}
           variant="outlined"
-          sx={{
-            flexShrink: 0,
+          sx={isMobile ? {
             aspectRatio: '16/9',
-            height: theme => theme.spacing(16),
+            width: '100%',
             overflow: 'hidden',
-            mr: 1,
+            mb: 1,
+          } : {
+            aspectRatio: '16/9',
+            width: theme => theme.spacing(28),
+            overflow: 'hidden',
+            mr: 2,
+            flexShrink: 0,
           }}
         >
           <Box
             component="img"
             display="block"
-            src={video.attributes.thumbnails.find(t => t.height === size.near(video.attributes.thumbnails.map(t => t.height), 128))?.url || '/_resources/images/no-image.png'}
+            src={video.attributes.thumbnails.find(t => t.width === size.near(video.attributes.thumbnails.map(t => t.width), 320))?.url || '/_resources/images/no-image.png'}
             alt={video.attributes.title}
             sx={{
               width: '100%',
