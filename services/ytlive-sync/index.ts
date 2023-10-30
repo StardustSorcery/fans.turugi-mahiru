@@ -61,7 +61,7 @@ async function main() {
               isInProgressLiveStream: (video.duration.seconds === null) && (!video.upcoming),
               isUpcomingLiveStream: !!video.upcoming,
               videoPublishedAt: null,
-              scheduledStartsAt: video.upcoming || null,
+              scheduledStartsAt: video.upcoming?.toISOString() || null,
               scheduledEndsAt: null,
               startedAt: null,
               endedAt: null,

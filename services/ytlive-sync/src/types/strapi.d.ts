@@ -45,11 +45,11 @@ export interface Video {
   };
   isInProgressLiveStream: boolean;
   isUpcomingLiveStream: boolean;
-  videoPublishedAt: Date | null;
-  scheduledStartsAt: Date | null;
-  scheduledEndsAt: Date | null;
-  startedAt: Date | null;
-  endedAt: Date | null;
+  videoPublishedAt: string | null;
+  scheduledStartsAt: string | null;
+  scheduledEndsAt: string | null;
+  startedAt: string | null;
+  endedAt: string | null;
   client: string;
   etag: string;
   raw: any;
