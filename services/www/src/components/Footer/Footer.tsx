@@ -150,7 +150,7 @@ export default function Footer({
                 },
                 {
                   label: 'お問い合わせ',
-                  href: '/contacts',
+                  href: '/contact',
                   targetIsBlank: false,
                 }
               ].map(item => (
