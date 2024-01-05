@@ -85,3 +85,11 @@ export interface Video {
   etag: string;
   raw: any;
 }
+
+export interface Contact {
+  body: string;
+  firstName: string;
+  familyName: string;
+  organization: string;
+  email: string;
+}
