@@ -19,7 +19,7 @@ export default function TopKeyvisual({
     >
       <Box
         component="img"
-        src="/_resources/images/keyvisual_tmp.png"
+        src="/_resources/images/keyvisual_1_1_frame.png"
         sx={{
           position: 'relative',
           width: '100%',
