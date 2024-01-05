@@ -93,3 +93,8 @@ export interface Contact {
   organization: string;
   email: string;
 }
+
+export interface DiscordInvitation {
+  isActive: boolean;
+  url: string | null;
+}

@@ -8,7 +8,7 @@ import ContactForm from "./_components/ContactForm";
 
 export const metadata = {
   title: 'お問い合わせ | 剣城まひる.fans - 非公式ファンサイト',
-  description: '個人VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
+  description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
 };
 
 export default function ContactPage() {

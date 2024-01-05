@@ -15,6 +15,7 @@
     "@emotion/styled": "latest",
     "@mui/icons-material": "latest",
     "@mui/material": "latest",
+    "@svgr/webpack": "^8.1.0",
     "axios": "^1.6.3",
     "next": "latest",
     "react": "latest",
