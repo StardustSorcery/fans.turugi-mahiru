@@ -124,12 +124,6 @@ export default function Footer({
             >
               {[
                 {
-                  label: '??????',
-                  subLabel: 'ブログ',
-                  href: 'https://blog.turugi-mahiru.fans/',
-                  targetIsBlank: true,
-                },
-                {
                   label: (
                       <>
                         剣城まひるの救急箱
@@ -179,17 +173,17 @@ export default function Footer({
                 {
                   label: 'ぐぐたく',
                   subLabel: 'デザイン, システム構築',
-                  href: 'https://x.com/TakumaNitori',
+                  href: 'https://x.com/i/user/3247445996',
                   targetIsBlank: true,
                 },
                 {
-                  label: '??????',
+                  label: '山田葵',
                   subLabel: 'キービジュアル',
-                  href: 'https://x.com/',
+                  href: 'https://x.com/AYamada0224',
                   targetIsBlank: true,
                 },
                 {
-                  label: '絆創膏パシり隊のみなさん',
+                  label: '絆創膏パシリ隊のみなさん',
                   subLabel: 'Special Thanks',
                 }
               ].map((item) => (
