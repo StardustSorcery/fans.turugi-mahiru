@@ -56,13 +56,13 @@ export async function generateMetadata({
   if(newsItemError || !newsItem) {
     return {
       title: '剣城まひる.fans - 非公式ファンサイト',
-      description: '個人VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
+      description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
     };
   }
 
   return {
     title: `${newsItem.data.attributes.title} | ニュース | 剣城まひる.fans - 非公式ファンサイト`,
-    description: '個人VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
+    description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
   };
 };
 

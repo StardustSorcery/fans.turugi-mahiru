@@ -19,7 +19,7 @@ import NewsItem from '@/components/News/NewsItem';
 
 export const metadata = {
   title: '剣城まひる.fans - 非公式ファンサイト',
-  description: '個人VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
+  description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
 };
 
 function fetchLatestLiveStream(): Promise<{
