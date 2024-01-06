@@ -8,7 +8,7 @@ import {
   TwitterAuthProvider,
   signInWithPopup,
 } from 'firebase/auth';
-import { analytics, app } from './init';
+import { app, getAnalytics } from './init';
 import { logEvent } from 'firebase/analytics';
 
 const auth = getAuth(app);
@@ -17,30 +17,37 @@ export function onAuthStateChanged(cb: NextOrObserver<User>) {
   return _onAuthStateChanged(auth, cb);
 }
 
-export function singInWithGoogle() {
+export async function singInWithGoogle() {
+  const analytics = await getAnalytics();
+  if(!analytics) return;
+
   const provider = new GoogleAuthProvider();
-  return signInWithPopup(auth, provider)
-    .then((userCredential) => {
-      logEvent(analytics, 'login', { method: 'Google' });
+  const userCredential = await signInWithPopup(auth, provider);
 
-      return userCredential;
-    });
+  logEvent(analytics, 'login', { method: 'Google' });
 
+  return userCredential;
 }
 
-export function singInWithTwitter() {
+export async function singInWithTwitter() {
+  const analytics = await getAnalytics();
+  if(!analytics) return;
+
   const provider = new TwitterAuthProvider();
-  return signInWithPopup(auth, provider)
-    .then((userCredential) => {
-      logEvent(analytics, 'login', { method: 'Twitter' });
+  const userCredential = await signInWithPopup(auth, provider);
 
-      return userCredential;
-    });
+  logEvent(analytics, 'login', { method: 'Twitter' });
+
+  return userCredential;
 }
 
-export function signOut() {
-  return _signOut(auth)
-    .then(() => {
-      logEvent(analytics, 'logout');
-    });
+export async function signOut() {
+  const analytics = await getAnalytics();
+  if(!analytics) return;
+
+  await _signOut(auth)
+
+  logEvent(analytics, 'logout');
+
+  return;
 }

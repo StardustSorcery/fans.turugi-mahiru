@@ -1,9 +1,12 @@
 // Import the functions you need from the SDKs you need
 import {
+  getAnalytics as _getAnalytics,
+  isSupported,
+} from "firebase/analytics";
+import {
   type FirebaseOptions,
   initializeApp,
 } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -21,4 +24,6 @@ const firebaseConfig: FirebaseOptions = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-export const analytics = getAnalytics(app);
+export async function getAnalytics() {
+  return (await isSupported()) ? _getAnalytics(app) : null;
+}
