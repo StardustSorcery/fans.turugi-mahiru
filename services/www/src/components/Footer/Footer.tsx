@@ -22,6 +22,7 @@ import {
   alpha,
   styled,
 } from '@mui/material/styles';
+import NextLink from 'next/link';
 import { notoEmoji } from '@/app/fonts';
 
 const FooterSectionTitle = styled(Typography)<TypographyProps>(({ theme }) => ({
@@ -31,6 +32,7 @@ const FooterSectionTitle = styled(Typography)<TypographyProps>(({ theme }) => ({
 
 const FooterLink = styled((props: LinkProps) => (
   <Link
+    component={NextLink}
     color="inherit"
     {...props}
   />
@@ -38,6 +40,7 @@ const FooterLink = styled((props: LinkProps) => (
 
 const FooterListLink = styled((props: LinkProps) => (
   <Link
+    component={NextLink}
     color="inherit"
     {...props}
   />
@@ -143,10 +146,17 @@ export default function Footer({
                   targetIsBlank: false,
                 },
                 {
+                  label: 'このサイトについて',
+                  subLabel: 'About',
+                  href: '/about',
+                  targetIsBlank: false,
+                },
+                {
                   label: 'お問い合わせ',
+                  subLabel: 'Contact',
                   href: '/contact',
                   targetIsBlank: false,
-                }
+                },
               ].map(item => (
                 <ListItem
                   key={item.href}

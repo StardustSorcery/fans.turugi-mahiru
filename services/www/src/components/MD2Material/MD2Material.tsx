@@ -5,6 +5,7 @@ import {
   Divider,
   Link,
 } from '@mui/material';
+import NextLink from 'next/link';
 import ReactMarkdown from 'react-markdown';
 
 export default function MD2Material({
@@ -91,6 +92,7 @@ export default function MD2Material({
         ),
         a: ({ node, ...props }) => (
           <Link
+            component={NextLink}
             target="_blank"
             color="inherit"
             {...(props as any)}
