@@ -8,21 +8,32 @@ import {
   ButtonBase,
   ButtonBaseProps,
   ButtonProps,
+  CircularProgress,
   Divider,
   MenuItem,
   MenuList,
   Popover,
   Stack,
+  StackProps,
   Typography,
 } from "@mui/material";
 import {
   useContext,
+  useEffect,
   useState,
 } from "react";
 
 export default function AccountMenu({
+  SignInButtonProps,
+  AccountButtonProps,
   ...props
-}: ButtonProps & ButtonBaseProps): React.ReactNode {
+}: StackProps<
+  'div',
+  {
+    SignInButtonProps?: ButtonProps;
+    AccountButtonProps?: ButtonBaseProps;
+  }
+>): React.ReactNode {
   const {
     firebase: {
       user,
@@ -34,96 +45,118 @@ export default function AccountMenu({
     signInPopup,
   } = useContext(DefaultContext);
 
-  if(status !== 'authenticated' || user === null) {
-    return (
-      <Button
-        variant="contained"
-        color="secondary"
-        {...props}
-        onClick={() => {
-          signInPopup.open();
-        }}
-        disabled={status === 'loading'}
-      >
-        ログイン
-      </Button>
-    );
-  }
-
   const [ menuTarget, setMenuTarget ] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    if(status !== 'authenticated' || user === null) {
+      setMenuTarget(null);
+    }
+  }, [
+    user,
+    status,
+  ]);
 
   return (
     <>
-      <ButtonBase
+      <Stack
+        flexDirection="row"
+        alignItems="center"
         {...props}
-        sx={{
-          borderRadius: '100%',
-          ...props.sx,
-        }}
-        onClick={e => {
-          setMenuTarget(e.currentTarget);
-        }}
       >
-        <Avatar
-          src={user.photoURL || ''}
-        />
-      </ButtonBase>
+        {status === 'loading' && (
+          <CircularProgress
+            color="secondary"
+            size={40}
+          />
+        )}
 
-      <Popover
-        anchorEl={menuTarget}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        open={menuTarget !== null}
-        onClose={() => {
-          setMenuTarget(null);
-        }}
-      >
-        <Stack
-          flexDirection="row"
-          alignItems="center"
-          gap={1}
-          p={2}
-        >
-          <Avatar
-            src={user.photoURL || ''}
-            sx={{
-              width: theme => theme.spacing(5),
-              height: theme => theme.spacing(5),
+        {(status === 'unauthenticated' && user === null) && (
+          <Button
+            variant="contained"
+            color="secondary"
+            {...SignInButtonProps}
+            onClick={() => {
+              signInPopup.open();
             }}
+          >
+            ログイン
+          </Button>
+        )}
+
+        {(status === 'authenticated' && user !== null) && (
+          <ButtonBase
+            {...AccountButtonProps}
+            sx={{
+              borderRadius: '100%',
+              ...AccountButtonProps?.sx,
+            }}
+            onClick={e => {
+              setMenuTarget(e.currentTarget);
+            }}
+          >
+            <Avatar
+              src={user.photoURL || ''}
+            />
+          </ButtonBase>
+        )}
+      </Stack>
+
+      {(status === 'authenticated' && user !== null) && (
+        <Popover
+          anchorEl={menuTarget}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={menuTarget !== null}
+          onClose={() => {
+            setMenuTarget(null);
+          }}
+        >
+          <Stack
+            flexDirection="row"
+            alignItems="center"
+            gap={1}
+            p={2}
+          >
+            <Avatar
+              src={user.photoURL || ''}
+              sx={{
+                width: theme => theme.spacing(5),
+                height: theme => theme.spacing(5),
+              }}
+            />
+
+            <Typography
+              align="center"
+            >
+              {user.displayName}
+            </Typography>
+          </Stack>
+
+          <Divider
           />
 
-          <Typography
-            align="center"
+          <MenuList
           >
-            {user.displayName}
-          </Typography>
-        </Stack>
+            <MenuItem
+            >
+              アカウント設定
+            </MenuItem>
 
-        <Divider
-        />
-
-        <MenuList
-        >
-          <MenuItem
-          >
-            アカウント設定
-          </MenuItem>
-
-          <MenuItem
-            onClick={() => {
-              signOut();
-            }}
-          >
-            ログアウト
-          </MenuItem>
-        </MenuList>
-      </Popover>
+            <MenuItem
+              onClick={() => {
+                signOut();
+              }}
+            >
+              ログアウト
+            </MenuItem>
+          </MenuList>
+        </Popover>
+      )}
     </>
   )
 }
