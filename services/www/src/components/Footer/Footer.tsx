@@ -309,6 +309,13 @@ export default function Footer({
             align="center"
           >
             <FooterLink
+              href="/terms"
+              target="_blank"
+            >
+              利用規約
+            </FooterLink>
+            ・
+            <FooterLink
               href="/privacy"
               target="_blank"
             >
