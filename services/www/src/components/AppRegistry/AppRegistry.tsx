@@ -1,14 +1,13 @@
 'use client';
 import { AppContext } from "@/types/app";
 import { onAuthStateChanged } from "@/utils/firebase/auth";
-import { analytics } from "@/utils/firebase/init";
+import { getAnalytics } from "@/utils/firebase/init";
 import { logEvent } from "firebase/analytics";
 import {
   useEffect,
   useState,
 } from "react"
 import { appContext } from "./AppContext";
-
 
 export default function AppRegistry({
   children,
@@ -18,18 +17,23 @@ export default function AppRegistry({
   const [ firebaseUser, setFirebaseUser ] = useState<AppContext['firebase']['user']>(null);
   const [ firebaseStatus, setFirebaseStatus ] = useState<AppContext['firebase']['status']>('loading');
   useEffect(() => {
-    onAuthStateChanged((user) => {
-      setFirebaseUser(user);
-      setFirebaseStatus(prevStatus => {
-        const status = user === null ? 'unauthenticated' : 'authenticated';
+    getAnalytics()
+      .then(analytics => {
+        if(!analytics) return;
 
-        if(prevStatus === 'loading' && status === 'authenticated') {
-          logEvent(analytics, 'login_auto');
-        }
+        onAuthStateChanged((user) => {
+          setFirebaseUser(user);
+          setFirebaseStatus(prevStatus => {
+            const status = user === null ? 'unauthenticated' : 'authenticated';
 
-        return status;
+            if(prevStatus === 'loading' && status === 'authenticated') {
+              logEvent(analytics, 'login_auto');
+            }
+
+            return status;
+          });
+        });
       });
-    });
   }, []);
 
   return (

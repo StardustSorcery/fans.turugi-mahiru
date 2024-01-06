@@ -101,7 +101,9 @@ export default function CommonHeader({
           />
 
           <AccountMenu
-            disableElevation
+            SignInButtonProps={{
+              disableElevation: true,
+            }}
             sx={{
               flexShrink: 0,
               ml: 1,
