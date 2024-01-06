@@ -6,11 +6,9 @@ import {
   Button,
   Container,
   Link,
-  Stack,
   Typography,
 } from "@mui/material";
 import NextLink from 'next/link';
-import { notoColorEmoji } from '@/app/fonts';
 
 export default function TitleSection({
   isError,
@@ -29,10 +27,6 @@ export default function TitleSection({
     <Box
       py={4}
       {...props}
-      sx={{
-        //backgroundColor: theme => theme.palette.background.paper,
-        ...props.sx,
-      }}
     >
       <Container
         maxWidth="md"
@@ -76,6 +70,15 @@ export default function TitleSection({
           {!isError && isActive && url.trim() !== '' && (
             <>
               Discord サーバーに参加することで&nbsp;
+              <Link
+                component={NextLink}
+                href="/terms"
+                target="_blank"
+                color="secondary"
+              >
+                利用規約
+              </Link>
+              &nbsp;と&nbsp;
               <Link
                 component={NextLink}
                 href="/privacy"

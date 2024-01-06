@@ -45,7 +45,7 @@ export default function AbstractSection({
           <Typography
             paragraph
           >
-            剣城まひるのファン同士での交流や企画を目的としたファンサーバーです。
+            剣城まひるのファン同士での交流や企画を目的とした非公式ファンサーバーです。
           </Typography>
           <Typography
             paragraph
