@@ -10,6 +10,7 @@ import {
 import TabNavigation from "@/components/TabNavigation/TabNavigation";
 import NextLink from "next/link";
 import SideNavTrigger from "../../_components/SideNavigation/SideNavTrigger";
+import AccountMenu from "@/components/AccountMenu";
 
 export default function CommonHeader({
   ...props
@@ -57,7 +58,11 @@ export default function CommonHeader({
           />
 
           <Box
+            flexShrink={0}
+            pr={1}
           >
+            <AccountMenu
+            />
           </Box>
         </Toolbar>
       ) : (
@@ -92,6 +97,14 @@ export default function CommonHeader({
             flexShrink={1}
             sx={{
               minWidth: 0,
+            }}
+          />
+
+          <AccountMenu
+            disableElevation
+            sx={{
+              flexShrink: 0,
+              ml: 1,
             }}
           />
         </Toolbar>

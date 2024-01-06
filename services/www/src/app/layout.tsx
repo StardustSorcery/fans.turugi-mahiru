@@ -1,3 +1,4 @@
+import AppRegistry from '@/components/AppRegistry/AppRegistry';
 import ThemeRegistry from '@/components/ThemeRegistry/ThemeRegistry';
 
 export const metadata = {
@@ -12,10 +13,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body
       >
-        <ThemeRegistry
+        <AppRegistry
         >
-          {children}
-        </ThemeRegistry>
+          <ThemeRegistry
+          >
+            {children}
+          </ThemeRegistry>
+        </AppRegistry>
       </body>
     </html>
   );
