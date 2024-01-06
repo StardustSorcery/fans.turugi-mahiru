@@ -1,8 +1,9 @@
 import QandA from "@/components/QandA";
-import { Box, Container, Paper, Stack, Typography } from "@mui/material";
+import { Box, Container, Link, Paper, Stack, Typography } from "@mui/material";
 import AbstractSection from "./_components/AbstractSection";
 import TitleSection from "./_components/TitleSection";
 import { DiscordInvitation } from "@/types/strapi";
+import { notoColorEmoji } from "@/app/fonts";
 
 export const metadata = {
   title: 'Discord サーバー『剣城まひるの救急箱🩹』 | 剣城まひる.fans - 非公式ファンサイト',
@@ -104,6 +105,47 @@ export default async function DiscordPage() {
                       paragraph
                     >
                       なおサーバー参加後に自己紹介チャンネルにて自己紹介の投稿を必須とさせていただいております。自己紹介を確認後にすべてのチャンネルを閲覧できるよう権限を変更いたします。
+                    </Typography>
+                  </>
+                }
+              />
+
+              <QandA
+                question="FANBOX 特典の公式 Discord サーバーとの違いは何ですか？"
+                answer="運営母体とサーバー内のコンテンツが大きく異なります。"
+                answerDetail={
+                  <>
+                    <Typography
+                      paragraph
+                    >
+                      FANBOX 特典の Discord サーバーは剣城まひるさんが運営する公式 Discord サーバーですが、「剣城まひるの救急箱
+                      <Box
+                        component="span"
+                        sx={{
+                          fontFamily: notoColorEmoji.style.fontFamily,
+                        }}
+                      >
+                        🩹
+                      </Box>
+                      」は Stardust Sorcery が運営する非公式の Discord ファンサーバーです。
+                    </Typography>
+                    <Typography
+                      paragraph
+                    >
+                      サーバーメンバー同士で雑談ができるチャンネルはどちらのサーバーにも存在しますが、公式サーバーでは不定期に剣城まひるさんと会話することも可能です。一方で非公式サーバーでは他にもサプライズ企画やコミックマーケットをはじめとした同人誌即売会への参加などをファン同士で企画できるチャンネルがあり、ファン同士の交流や創作活動などに重点を置いています。
+                    </Typography>
+                    <Typography
+                      paragraph
+                    >
+                      FANBOX 特典の公式 Discord サーバーの詳細は&nbsp;
+                      <Link
+                        href="https://www.fanbox.cc/@turugimahiru/plans"
+                        target="_blank"
+                        color="secondary"
+                      >
+                        FANBOX のプラン一覧
+                      </Link>
+                      &nbsp;などの公式情報をご確認ください。
                     </Typography>
                   </>
                 }
