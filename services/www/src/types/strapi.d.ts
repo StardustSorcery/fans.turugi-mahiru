@@ -59,6 +59,12 @@ export interface Privacy {
   body: string;
 }
 
+export interface Terms {
+  createdAt: string;
+  updatedAt: string;
+  body: string;
+}
+
 export interface Video {
   provider: string;
   videoId: string;
