@@ -16,6 +16,7 @@ import Heading1 from '@/components/Heading/Heading1';
 import { StrapiResponse } from 'strapi-sdk-js';
 import { News, StrapiResponseData, Video } from '@/types/strapi';
 import NewsItem from '@/components/News/NewsItem';
+import FloatingAccountMenu from './_components/FloatingAccountMenu';
 
 export const metadata = {
   title: '剣城まひる.fans - 非公式ファンサイト',
@@ -81,6 +82,9 @@ export default async function TopPage() {
   return (
     <>
       <SideNavTriggerWrapper
+      />
+
+      <FloatingAccountMenu
       />
 
       <Top
