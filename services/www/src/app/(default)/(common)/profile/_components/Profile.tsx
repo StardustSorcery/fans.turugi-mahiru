@@ -150,7 +150,7 @@ export default function Profile({
             },
             {
               term: '年齢',
-              description: '24歳',
+              description: '23歳',
             },
             {
               term: '身長',
