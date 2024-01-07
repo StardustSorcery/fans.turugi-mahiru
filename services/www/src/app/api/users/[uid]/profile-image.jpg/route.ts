@@ -3,6 +3,62 @@ import { auth } from "@/utils/firebaseAdmin/auth";
 import { NextRequest, NextResponse } from "next/server";
 import FormData from "form-data";
 import sharp from "sharp";
+import axios from "axios";
+import { StrapiMedia, StrapiResponseData, UserProfile } from "@/types/strapi";
+
+export async function GET(
+  req: NextRequest,
+  {
+    params: {
+      uid,
+    },
+  }: {
+    params: {
+      uid: string;
+    };
+  },
+): Promise<NextResponse> {
+  return (async () => {
+    const profileImage: Buffer | null =
+      await strapi
+        .find<StrapiResponseData<UserProfile>[]>(
+          'user-profiles',
+          {
+            populate: '*',
+            filters: {
+              uid: {
+                $eq: uid,
+              },
+            },
+          },
+        )
+        .then(resp => {
+          const record = resp.data[0];
+          const profileImageRecord = record.attributes.profileImage.data;
+          if(!record || !profileImageRecord) return null;
+
+          // get binary
+          return axios
+            .request<ArrayBuffer>({
+              method: 'get',
+              baseURL: strapi.options.url,
+              url: profileImageRecord.attributes.url,
+              responseType: 'arraybuffer',
+            })
+            .then(resp => {
+              return Buffer.from(resp.data);
+            });
+        });
+
+    const res = new NextResponse(profileImage);
+    res.headers.set('Content-Type', 'image/jpg');
+    return res;
+  })()
+    .catch(err => {
+      console.error(err);
+      return NextResponse.json({}, { status: 500 });
+    });
+}
 
 export async function POST(
   req: NextRequest,
@@ -48,6 +104,7 @@ export async function POST(
       throw error;
     }
 
+    // Convert photo
     const reqFormData = await req.formData();
     const photo = reqFormData.get('photo');
 
@@ -69,22 +126,87 @@ export async function POST(
         })
         .toBuffer();
 
-    const formData = new FormData();
-    formData.append('files', convertedPhotoBuffer, `users_${uid}_profile-image.jpg`);
-
-    await strapi
-      .request(
-        'post',
-        '/upload',
+    // (Create if not exist and) get id of UserProfile record
+    const {
+      userProfileRecordId,
+      profileImageFileId,
+    }: {
+      userProfileRecordId: number;
+      profileImageFileId: number | null;
+    } = await strapi
+      .find<StrapiResponseData<UserProfile>[]>(
+        'user-profiles',
         {
-          data: formData,
-          headers: {
-            ...formData.getHeaders(),
+          populate: '*',
+          filters: {
+            uid: {
+              $eq: uid,
+            },
           },
         }
-      );
+      )
+      .then(resp => {
+        const record = resp.data[0];
+        if(record) {
+          const profileImageRecord = record.attributes.profileImage.data;
 
-    return NextResponse.json({});
+          return {
+            userProfileRecordId: record.id,
+            profileImageFileId: profileImageRecord ? profileImageRecord.id : null,
+          };
+        }
+
+        // create
+        return strapi
+          .create<StrapiResponseData<UserProfile>>(
+            'user-profiles',
+            {
+              uid,
+            }
+          )
+          .then(resp => {
+            return {
+              userProfileRecordId: resp.data.id,
+              profileImageFileId: null,
+            };
+          });
+      });
+
+    // Upload photo
+    const formData = new FormData();
+    formData.append('files', convertedPhotoBuffer, `users_${uid}_profile-image.jpg`);
+    formData.append('ref', 'api::user-profile.user-profile');
+    formData.append('refId', userProfileRecordId);
+    formData.append('field', 'profileImage');
+
+    const newProfileImageRecordData =
+      await strapi
+        .request<StrapiMedia[]>(
+          'post',
+          '/upload',
+          {
+            data: formData,
+            headers: {
+              ...formData.getHeaders(),
+            },
+          }
+        )
+        .then(result => {
+          return result[0];
+        });
+
+    // Delete if old photo exists
+    if(profileImageFileId) {
+      await strapi
+        .request(
+          'delete',
+          `/upload/files/${profileImageFileId}`
+        );
+    }
+
+    return NextResponse.json({
+      hash: newProfileImageRecordData.hash.split('_').at(-1),
+    });
   })()
     .catch(err => {
       if(err instanceof Error) {

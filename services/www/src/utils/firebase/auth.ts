@@ -103,21 +103,25 @@ export async function updatePhoto(photo: File) {
   const formData = new FormData();
   formData.append('photo', photo);
 
-  await axios
-    .request({
-      method: 'post',
-      url: `/api/users/${user.uid}/profile-image.jpg`,
-      data: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `Bearer ${idToken}`,
-      },
-    });
+  const photoHash =
+    await axios
+      .request<{ hash: string; }>({
+        method: 'post',
+        url: `/api/users/${user.uid}/profile-image.jpg`,
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${idToken}`,
+        },
+      })
+      .then(resp => {
+        return resp.data.hash;
+      });
 
   return await updateProfile(
     user,
     {
-      photoURL: `${window.location.origin}/api/users/${user.uid}/profile-image.jpg`,
+      photoURL: `${window.location.origin}/api/users/${user.uid}/profile-image.jpg?h=${photoHash}`,
     }
   );
 }
