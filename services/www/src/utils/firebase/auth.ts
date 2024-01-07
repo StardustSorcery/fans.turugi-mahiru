@@ -91,3 +91,15 @@ export async function unlinkTwitter() {
   const provider = new TwitterAuthProvider();
   return await unlink(user, provider.providerId)
 }
+
+// Update Profile
+export async function updatePhoto(photo: File) {
+  return;
+}
+
+export async function updateDisplayName(displayName: string) {
+  const user = auth.currentUser;
+  if(!user) throw new Error('no-user');
+
+  return await updateProfile(user, { displayName });
+}

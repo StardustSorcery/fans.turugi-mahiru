@@ -16,6 +16,7 @@ import { useContext, useState } from "react";
 import DefaultContext from "../DefaultContext";
 import { Close } from "@mui/icons-material";
 import LinkProvierForm from "@/components/Firebase/LinkProviderForm";
+import { UpdateProfileForm } from "@/components/Firebase/UpdateProfileForm";
 
 type TabPanelProps = BoxProps<
   'div',
@@ -127,7 +128,8 @@ export default function AccountSettingPopup({
               value="profile"
               title="プロフィール"
             >
-
+              <UpdateProfileForm
+              />
             </TabPanel>
 
             <TabPanel
