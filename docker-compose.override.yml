@@ -66,6 +66,7 @@ services:
         CMS_PUBLIC_URL: http://cms.turugi-mahiru.fans.127.0.0.1.nip.io:${HTTP_PORT:-8080}/
     volumes:
       - ./services/www:/app
+      - ${GOOGLE_APPLICATION_CREDENTIALS}:/secrets/firebase-admin.json
 
 volumes:
   db_data:

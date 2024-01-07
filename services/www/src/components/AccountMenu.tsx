@@ -43,6 +43,7 @@ export default function AccountMenu({
 
   const {
     signInPopup,
+    accountSettingPopup,
   } = useContext(DefaultContext);
 
   const [ menuTarget, setMenuTarget ] = useState<HTMLElement | null>(null);
@@ -143,6 +144,10 @@ export default function AccountMenu({
           <MenuList
           >
             <MenuItem
+              onClick={() => {
+                accountSettingPopup.open();
+                setMenuTarget(null);
+              }}
             >
               アカウント設定
             </MenuItem>
@@ -150,6 +155,7 @@ export default function AccountMenu({
             <MenuItem
               onClick={() => {
                 signOut();
+                setMenuTarget(null);
               }}
             >
               ログアウト

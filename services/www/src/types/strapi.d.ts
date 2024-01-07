@@ -26,6 +26,14 @@ export interface StrapiMedia {
   height: number;
   mime: string;
   ext: string;
+  hash: string;
+}
+
+export interface UserProfile {
+  uid: string;
+  profileImage: {
+    data: StrapiResponseData<StrapiMedia> | null;
+  };
 }
 
 export interface News {
