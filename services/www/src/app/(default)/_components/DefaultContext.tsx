@@ -19,7 +19,13 @@ const DefaultContext = createContext<{
     open: () => void;
     close: () => void;
     toggle: () => void;
-  }
+  };
+  accountSettingPopup: {
+    isOpen: boolean;
+    open: () => void;
+    close: () => void;
+    toggle: () => void;
+  };
 }>({
   sideNav: {
     isOpen: false,
@@ -28,6 +34,12 @@ const DefaultContext = createContext<{
     toggle: () => {},
   },
   signInPopup: {
+    isOpen: false,
+    open: () => {},
+    close: () => {},
+    toggle: () => {},
+  },
+  accountSettingPopup: {
     isOpen: false,
     open: () => {},
     close: () => {},
@@ -61,6 +73,17 @@ export function DefaultContextProvider({ children }: { children: React.ReactNode
     setSignInPopupIsOpen(isOpen => !isOpen);
   }, []);
 
+  const [ accountSettingPopupIsOpen, setAccountSettingPopupIsOpen ] = useState<boolean>(false);
+  const openAccountSettingPopup = useCallback(() => {
+    setAccountSettingPopupIsOpen(true);
+  }, []);
+  const closeAccountSettingPopup = useCallback(() => {
+    setAccountSettingPopupIsOpen(false);
+  }, []);
+  const toggleAccountSettingPopup = useCallback(() => {
+    setAccountSettingPopupIsOpen(isOpen => !isOpen);
+  }, []);
+
   return (
     <DefaultContext.Provider
       value={{
@@ -75,6 +98,12 @@ export function DefaultContextProvider({ children }: { children: React.ReactNode
           open: openSignInPopup,
           close: closeSignInPopup,
           toggle: toggleSignInPopup,
+        },
+        accountSettingPopup: {
+          isOpen: accountSettingPopupIsOpen,
+          open: openAccountSettingPopup,
+          close: closeAccountSettingPopup,
+          toggle: toggleAccountSettingPopup,
         },
       }}
     >

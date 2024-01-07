@@ -2,6 +2,7 @@ import Footer from "@/components/Footer/Footer";
 import { DefaultContextProvider } from "./_components/DefaultContext";
 import SideNavigation from "@/app/(default)/_components/SideNavigation/SideNavigation";
 import SignInPopup from "./_components/FirebaseAuth/SignInPopup";
+import AccountSettingPopup from "./_components/FirebaseAuth/AccountSettingPopup";
 
 export default function DefaultLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -18,6 +19,9 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
         />
 
         <SignInPopup
+        />
+
+        <AccountSettingPopup
         />
       </DefaultContextProvider>
     </>
