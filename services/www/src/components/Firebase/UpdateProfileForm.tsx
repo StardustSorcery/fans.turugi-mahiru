@@ -8,8 +8,8 @@ import {
   Stack,
   StackProps,
   TextField,
-  alpha,
 } from "@mui/material";
+import { alpha } from '@mui/material/styles';
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { appContext } from "../AppRegistry/AppContext";
 import { EditOutlined } from "@mui/icons-material";

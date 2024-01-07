@@ -13,6 +13,7 @@ import {
 } from 'firebase/auth';
 import { app, getAnalytics } from './init';
 import { logEvent } from 'firebase/analytics';
+import axios from 'axios';
 
 export const auth = getAuth(app);
 
@@ -94,7 +95,31 @@ export async function unlinkTwitter() {
 
 // Update Profile
 export async function updatePhoto(photo: File) {
-  return;
+  const user = auth.currentUser;
+  if(!user) throw new Error('no-user');
+
+  const idToken = await user.getIdToken();
+
+  const formData = new FormData();
+  formData.append('photo', photo);
+
+  await axios
+    .request({
+      method: 'post',
+      url: `/api/users/${user.uid}/profile-image.jpg`,
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${idToken}`,
+      },
+    });
+
+  return await updateProfile(
+    user,
+    {
+      photoURL: `${window.location.origin}/api/users/${user.uid}/profile-image.jpg`,
+    }
+  );
 }
 
 export async function updateDisplayName(displayName: string) {
