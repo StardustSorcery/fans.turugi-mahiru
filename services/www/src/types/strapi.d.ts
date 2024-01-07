@@ -92,6 +92,12 @@ export interface Video {
   raw: any;
 }
 
+export interface ScheduleExcluded {
+  videos: {
+    data: StrapiResponseData<Video>[];
+  };
+}
+
 export interface Contact {
   body: string;
   firstName: string;

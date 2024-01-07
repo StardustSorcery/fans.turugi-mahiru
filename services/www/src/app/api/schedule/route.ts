@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import strapi from '@/app/api/_libs/strapi';
-import type {
-  Video,
-  StrapiResponseData,
+import {
+  type Video,
+  type StrapiResponseData,
+  ScheduleExcluded,
 } from '@/types/strapi';
-import { StrapiRequestParams } from 'strapi-sdk-js';
 import { LiveScheduleByDate } from '@/types/schedule';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
@@ -16,6 +16,17 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   if(!afterAtStr || !beforeAtStr) {
     return NextResponse.json({}, { status: 400 });
   }
+
+  const scheduleExcludedVideos = await strapi
+    .find<StrapiResponseData<ScheduleExcluded>>(
+      'schedule-excluded',
+      {
+        populate: '*',
+      }
+    )
+    .then(resp => {
+      return resp.data.attributes.videos.data;
+    });
 
   const afterAt = new Date(afterAtStr);
   const beforeAt = new Date(beforeAtStr);
@@ -30,6 +41,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             $lt: beforeAt,
           },
           isUpcomingLiveStream: true,
+          videoId: {
+            $notIn: scheduleExcludedVideos.map(video => video.attributes.videoId),
+          },
         },
         populate: [
           'thumbnails',

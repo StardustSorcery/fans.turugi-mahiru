@@ -137,29 +137,46 @@ export default async function SchedulePage() {
                   </Box>
                 )}
 
-                {schedule.map((bucket) => (
+                {schedule.length === 0 ? (
                   <Box
-                    component="section"
-                    key={bucket.date}
+                    px={2}
+                    py={3}
                   >
-                    <Heading2
-                      text={`${date2str(new Date(bucket.date))} (${['日','月','火','水','木','金','土'][new Date(bucket.date).getDay()]})`}
-                      sx={{
-                        mx: 2,
-                      }}
-                    />
-
-                    <List
+                    <Typography
+                      align="center"
+                      component="p"
+                      variant="subtitle1"
                     >
-                      {bucket.videos.map(video => (
-                        <VideoListItem
-                          key={`Schedule#${video.id}`}
-                          video={bucket.videos[0]}
-                        />
-                      ))}
-                    </List>
+                      直近の配信予定はありません.
+                    </Typography>
                   </Box>
-                ))}
+                ) : (
+                  <>
+                    {schedule.map((bucket) => (
+                      <Box
+                        component="section"
+                        key={bucket.date}
+                      >
+                        <Heading2
+                          text={`${date2str(new Date(bucket.date))} (${['日','月','火','水','木','金','土'][new Date(bucket.date).getDay()]})`}
+                          sx={{
+                            mx: 2,
+                          }}
+                        />
+
+                        <List
+                        >
+                          {bucket.videos.map(video => (
+                            <VideoListItem
+                              key={`Schedule#${video.id}`}
+                              video={bucket.videos[0]}
+                            />
+                          ))}
+                        </List>
+                      </Box>
+                    ))}
+                  </>
+                )}
               </>
             )}
           </Box>
