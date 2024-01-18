@@ -5,6 +5,7 @@ import scheduler from 'node-schedule';
 import { Innertube, YTNodes } from 'youtubei.js';
 import objectHash from 'object-hash';
 import { StrapiResponseData, Video } from '@/types/strapi';
+import upsertVideo from '@/libs/upsertVideo';
 
 const logger = log4js.init().getLogger();
 
@@ -68,102 +69,9 @@ async function main() {
               client: 'youtubei.js',
             };
 
-            const etag = objectHash.MD5(record);
+            await upsertVideo(record, video);
 
-            const isUpdated = await redisClient
-              .hGet(redis.keys.videoEtagHash, video.id)
-              .then(cachedEtag => {
-                return etag !== cachedEtag;
-              })
-              .catch(err => {
-                err.message = `[Redis.HGET(videoEtagHash)] ${err.message}`;
-                throw err;
-              });
-
-            if(!isUpdated) {
-              logger.info(`[Task] Skipping video "${video.title}" (${video.id}): already up-to-date.`);
-              return;
-            }
-
-            // get current entry id
-            const entryId = await strapi
-              .find<StrapiResponseData<Video>[]>(
-                'videos',
-                {
-                  fields: [],
-                  filters: {
-                    provider: 'youtube',
-                    videoId: video.id,
-                  },
-                  pagination: {
-                    start: 0,
-                    limit: 1,
-                    withCount: false,
-                  },
-                }
-              )
-              .then(result => {
-                return result.data[0]?.id || null;
-              })
-              .catch(err => {
-                err.message = `[Strapi.find<Video[]>] ${err.message}`;
-                throw err;
-              });
-
-            // create or update record
-            const fullRecord: Video = {
-              ...record,
-              etag,
-              raw: video,
-            };
-
-            if(entryId === null) {
-              await strapi
-                .create<StrapiResponseData<Video>>(
-                  'videos',
-                  fullRecord,
-                  {
-                    fields: [],
-                  }
-                )
-                .then(result => {
-                  logger.debug(`[Strapi.create<Video>] Created video entry (id: ${result.data.id}).`);
-                })
-                .catch(err => {
-                  err.message = `[Strapi.create<Video>] ${err.message}`;
-                  throw err;
-                });
-            }
-            else {
-              await strapi
-                .update<StrapiResponseData<Video>>(
-                  'videos',
-                  entryId,
-                  fullRecord,
-                  {
-                    fields: [],
-                  }
-                )
-                .then(() => {
-                  logger.debug(`[Strapi.update<Video>] Updated video entry (id: ${entryId}).`)
-                })
-                .catch(err => {
-                  err.message = `[Strapi.update<Video>] ${err.message}`;
-                  throw err;
-                });
-            }
-
-            // store etag
-            await redisClient
-              .hSet(redis.keys.videoEtagHash, video.id, etag)
-              .then(() => {
-                logger.debug(`[Redis.HSET(videoEtagHash)] Stored etag of the video "${video.title}" (${video.id}).`);
-                return;
-              })
-              .catch(err => {
-                err.message = `[Redis.HSET(videoEtagHash)] ${err.message}`;
-                throw err;
-              });
+            return;
           }
           catch(err) {
             if(err instanceof Error) {
