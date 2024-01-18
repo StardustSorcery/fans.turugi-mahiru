@@ -6,6 +6,8 @@ import { Innertube, YTNodes } from 'youtubei.js';
 import objectHash from 'object-hash';
 import { StrapiResponseData, Video } from '@/types/strapi';
 import upsertVideo from '@/libs/upsertVideo';
+import minimist from 'minimist';
+import * as GYoutube from '@/g-youtube';
 
 const logger = log4js.init().getLogger();
 
@@ -19,6 +21,113 @@ async function main() {
     location: 'JP',
   });
 
+  const gYoutube = await GYoutube.init();
+
+  // Handle CLI arguments
+  const args = minimist(process.argv.slice(2));
+  switch(args._[0]) {
+    default: {
+      break;
+    }
+    case 'add': {
+      switch(args._[1]) {
+        default: {
+          logger.error(`[CLI] unknown command "add ${args._[1]}"`);
+          process.exit(1);
+        }
+        case 'video': {
+          const videoIds = args._.slice(2);
+
+          const videos = await gYoutube.videos
+            .list({
+              part: [
+                'id',
+                'snippet',
+                'liveStreamingDetails',
+                'contentDetails',
+                'status',
+                'statistics',
+                'liveStreamingDetails',
+                'localizations',
+              ],
+              id: videoIds,
+              hl: 'ja',
+            })
+            .then(res => {
+              return res.data.items || [];
+            })
+            .catch((err: Error) => {
+              logger.error(`[YouTube#videos.list] ${err.message}`);
+              throw err;
+            });
+
+          const now = Date.now();
+
+          await Promise
+            .allSettled(videos.map(async (video) => {
+              const videoId = video.id;
+              if(!videoId) return null;
+
+              const record: Omit<Video, 'etag' | 'raw'> = {
+                provider: 'youtube',
+                videoId,
+                type: video.liveStreamingDetails ? 'LiveStream' : 'UploadedVideo',
+                title: video.snippet?.title || '',
+                description: video.snippet?.description || '',
+                thumbnails:
+                  video.snippet?.thumbnails
+                    ? (
+                      Object.values(video.snippet.thumbnails)
+                        .map(t => ({
+                          url: t.url,
+                          width: t.width || -1,
+                          height: t.height || -1,
+                        }))
+                    )
+                    : [{
+                      url: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+                      width: -1,
+                      height: -1,
+                    }],
+                author: {
+                  authorId: video.snippet?.channelId || null,
+                  title: video.snippet?.channelTitle || null,
+                },
+                isInProgressLiveStream:
+                  video.liveStreamingDetails && video.liveStreamingDetails.actualStartTime && !video.liveStreamingDetails.actualEndTime
+                    ? new Date(video.liveStreamingDetails.actualStartTime).getTime() > now
+                    : false,
+                isUpcomingLiveStream:
+                  video.liveStreamingDetails && !video.liveStreamingDetails.actualStartTime && video.liveStreamingDetails.scheduledStartTime
+                    ? new Date(video.liveStreamingDetails.scheduledStartTime).getTime() < now
+                    : false,
+                videoPublishedAt: video.snippet?.publishedAt || null,
+                scheduledStartsAt: video.liveStreamingDetails?.scheduledStartTime || null,
+                scheduledEndsAt: video.liveStreamingDetails?.scheduledEndTime || null,
+                startedAt: video.liveStreamingDetails?.actualStartTime || null,
+                endedAt: video.liveStreamingDetails?.actualEndTime || null,
+                client: 'googleapis.youtube.js',
+              };
+              
+              await upsertVideo(record, video)
+                .catch((err: Error) => {
+                  logger.error(`[upsertVideo] ${err.message}`);
+                  throw err;
+                });
+
+              return;
+            }))
+            .then(result => {
+              logger.info(`[CLI] ${result.filter(r => r.status === 'fulfilled').length}/${result.length} was fulfilled.`);
+            });
+
+          process.exit(0);
+        }
+      }
+    }
+  }
+
+  // Register sync-livestream-schedule task
   scheduler.scheduleJob(
     process.env.CRON_RULE || '*/30 * * * * *',
     async () => {
