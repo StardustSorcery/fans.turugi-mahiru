@@ -106,6 +106,17 @@ export interface ScheduleExcluded {
   };
 }
 
+export interface MusicVideo {
+  title: string;
+  originalArtist: {
+    authorId: string | null;
+    title: string | null;
+  };
+  video: {
+    data: StrapiResponseData<Video>;
+  };
+}
+
 export interface Contact {
   body: string;
   firstName: string;
