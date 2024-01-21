@@ -117,6 +117,13 @@ export interface MusicVideo {
   };
 }
 
+export interface RankingUserVoting {
+  uid: string;
+  videos: {
+    data: StrapiResponseData<Video>[];
+  };
+}
+
 export interface Contact {
   body: string;
   firstName: string;
