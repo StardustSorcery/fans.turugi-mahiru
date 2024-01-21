@@ -2,6 +2,7 @@
 import { Close, InfoOutlined } from "@mui/icons-material";
 import {
   Box,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -15,11 +16,12 @@ import VideoInputField from "./VideoInputField";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import { RankingUserVoting, StrapiResponseData, Video } from "@/types/strapi";
 import { VideoItem } from "./VideoItem";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { appContext } from "@/components/AppRegistry/AppContext";
 import { SaveStatus } from "./SaveStatus";
 
 export default function VotingDialog({
+  open,
   onClose,
   ...props
 }: DialogProps & {
@@ -35,7 +37,63 @@ export default function VotingDialog({
 
   const [ voting, setVoting ] = useState<StrapiResponseData<Video>[]>([]);
 
+  const [ loadStatus, setLoadStatus ] = useState<'loading' | 'loaded' | 'failed'>('loading');
+  const loadVoting = useCallback(async () => {
+    if(!user) return;
+
+    setLoadStatus('loading')
+    const idToken = await user
+      .getIdToken()
+      .catch(err => {
+        return null;
+      });
+    if(!idToken) {
+      setLoadStatus('failed');
+      return;
+    }
+
+    const videos = await axios
+      .request<StrapiResponseData<RankingUserVoting>>({
+        method: 'get',
+        url: '/api/ranking/votings',
+        headers: {
+          'Authorization': `Bearer ${idToken}`,
+        },
+      })
+      .then(res => {
+        return res.data.attributes.videos.data;
+      })
+      .catch((err: AxiosError) => {
+        if(err.response?.status === 404) return [] as StrapiResponseData<Video>[];
+        return null;
+      });
+    if(!videos) {
+      setLoadStatus('failed');
+      return;
+    }
+
+    setVoting(videos);
+    setLoadStatus('loaded');
+  }, [
+    user,
+    userHash,
+  ]);
+  useEffect(() => {
+    if(!open) return;
+    loadVoting();
+  }, [
+    loadVoting,
+    open,
+  ]);
+
   const [ saveStatus, setSaveStatus ] = useState<'none' | 'saved' | 'saving' | 'failed'>('none');
+  useEffect(() => {
+    if(!open) return;
+    setSaveStatus('none');
+  }, [
+    open,
+  ]);
+
   const saveVoting = useCallback(async (voting: StrapiResponseData<Video>[]) => {
     if(!user) return;
 
@@ -125,6 +183,7 @@ export default function VotingDialog({
 
   return (
     <Dialog
+      open={open}
       scroll="paper"
       maxWidth="sm"
       fullWidth
@@ -161,47 +220,72 @@ export default function VotingDialog({
       <DialogContent
         dividers
       >
-        {voting.length === 0 ? (
-          <Stack
-            p={4}
-            flexDirection="row"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <InfoOutlined
-              sx={{
-                mr: 1,
-              }}
-            />
-            <Typography
+        {{
+          loading: (
+            <Stack
+              alignItems="center"
+              my={4}
             >
-              URL を入力して動画・配信をリストに追加してください.
-            </Typography>
-          </Stack>
-        ) : (
-          voting.map((video, index) => (
-            <Fragment
-              key={video.id}
-            >
-              <VideoItem
-                rank={index + 1}
-                score={5 - index}
-                video={video}
-                toUpperButtonDisabled={index === 0}
-                onToUpperButtonClick={() => {
-                  swapVideos(index, index - 1);
-                }}
-                toLowerButtonDisabled={index === voting.length - 1}
-                onToLowerButtonClick={() => {
-                  swapVideos(index, index + 1);
-                }}
-                onDeleteButtonClick={() => {
-                  removeVideo(index);
-                }}
+              <CircularProgress
+                color="secondary"
               />
-            </Fragment>
-          ))
-        )}
+            </Stack>
+          ),
+          failed: (
+            <Stack
+              alignItems="center"
+              my={4}
+            >
+              <Typography
+              >
+                データの読み込み中にエラーが発生しました。
+              </Typography>
+            </Stack>
+          ),
+          loaded: (
+            voting.length === 0 ? (
+              <Stack
+                p={4}
+                flexDirection="row"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <InfoOutlined
+                  sx={{
+                    mr: 1,
+                  }}
+                />
+                <Typography
+                >
+                  URL を入力して動画・配信をリストに追加してください.
+                </Typography>
+              </Stack>
+            ) : (
+              voting.map((video, index) => (
+                <Fragment
+                  key={video.id}
+                >
+                  <VideoItem
+                    rank={index + 1}
+                    score={5 - index}
+                    video={video}
+                    toUpperButtonDisabled={index === 0}
+                    onToUpperButtonClick={() => {
+                      swapVideos(index, index - 1);
+                    }}
+                    toLowerButtonDisabled={index === voting.length - 1}
+                    onToLowerButtonClick={() => {
+                      swapVideos(index, index + 1);
+                    }}
+                    onDeleteButtonClick={() => {
+                      removeVideo(index);
+                    }}
+                  />
+                </Fragment>
+              ))
+            )
+          ),
+        }[loadStatus]}
       </DialogContent>
 
       <DialogActions
