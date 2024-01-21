@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_ranking_scored_videos",
+  "info": {
+    "displayName": "Scored Video"
+  },
+  "options": {},
+  "attributes": {
+    "score": {
+      "type": "integer",
+      "required": true
+    },
+    "video": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::video.video"
+    }
+  }
+}

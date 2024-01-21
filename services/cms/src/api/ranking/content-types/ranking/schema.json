@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "rankings",
+  "info": {
+    "singularName": "ranking",
+    "pluralName": "rankings",
+    "displayName": "Ranking"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "aggregatedAt": {
+      "type": "datetime",
+      "required": true
+    },
+    "scoredVideos": {
+      "displayName": "Scored Video",
+      "type": "component",
+      "repeatable": true,
+      "component": "ranking.scored-video"
+    }
+  }
+}
