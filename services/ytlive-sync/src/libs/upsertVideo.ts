@@ -6,7 +6,7 @@ import { StrapiResponseData, Video } from '@/types/strapi';
 
 const logger = log4js.init().getLogger();
 
-export default async function upsertVideo(record: Omit<Video, 'etag' | 'raw'>, raw: any) {
+export default async function upsertVideo(record: Omit<Video, 'etag' | 'raw'>, raw: any, recordId?: number) {
   const redisClient = await redis.init();
 
    await redis.connect(redisClient);
@@ -30,29 +30,31 @@ export default async function upsertVideo(record: Omit<Video, 'etag' | 'raw'>, r
   }
 
   // get current entry id
-  const entryId = await strapi
-    .find<StrapiResponseData<Video>[]>(
-      'videos',
-      {
-        fields: [],
-        filters: {
-          provider: 'youtube',
-          videoId: record.videoId,
-        },
-        pagination: {
-          start: 0,
-          limit: 1,
-          withCount: false,
-        },
-      }
-    )
-    .then(result => {
-      return result.data[0]?.id || null;
-    })
-    .catch(err => {
-      err.message = `[Strapi.find<Video[]>] ${err.message}`;
-      throw err;
-    });
+  const entryId =
+    recordId ||
+    await strapi
+      .find<StrapiResponseData<Video>[]>(
+        'videos',
+        {
+          fields: [],
+          filters: {
+            provider: 'youtube',
+            videoId: record.videoId,
+          },
+          pagination: {
+            start: 0,
+            limit: 1,
+            withCount: false,
+          },
+        }
+      )
+      .then(result => {
+        return result.data[0]?.id || null;
+      })
+      .catch(err => {
+        err.message = `[Strapi.find<Video[]>] ${err.message}`;
+        throw err;
+      });
 
     // create or update record
     const fullRecord: Video = {
