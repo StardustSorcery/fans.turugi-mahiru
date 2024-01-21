@@ -83,8 +83,8 @@ export function GET(req: NextRequest): Promise<NextResponse> {
               height: -1,
             }],
           author: {
-            authorId: null,
-            title: null,
+            authorId: videoInfo.basic_info.channel.id || null,
+            title: videoInfo.basic_info.channel.name || null,
           },
           isInProgressLiveStream: false,
           isUpcomingLiveStream: false,

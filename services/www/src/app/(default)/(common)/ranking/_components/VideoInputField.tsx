@@ -12,7 +12,7 @@ import {
   ButtonProps,
   CircularProgress,
 } from '@mui/material';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { NavigationEndpoint } from 'youtubei.js/dist/src/parser/nodes';
 import { StrapiResponseData, Video } from '@/types/strapi';
 
@@ -66,7 +66,11 @@ export default function VideoInputField({
         .then(resp => {
           return resp.data || null;
         })
-        .catch(err => {
+        .catch((err: AxiosError<{ code?: string; }>) => {
+          if(err.response?.data?.code) {
+            throw new Error(err.response.data.code);
+          }
+
           return null;
         });
       if(!videoRecord) throw new Error('get-video-info-failed');
