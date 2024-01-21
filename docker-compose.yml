@@ -20,9 +20,11 @@ services:
     environment:
       TZ: Asia/Tokyo
       YT_CHANNEL_ID: ${YTLIVE_SYNC_YT_CHANNEL_ID:-UCSzT-rU62SSiham-g1Dj9yw}
-      CRON_RULE: ${YTLIVE_SYNC_CRON_RULE:-*/30 * * * * *}
+      SYNC_CRON_RULE: ${YTLIVE_SYNC_SYNC_CRON_RULE:-*/30 * * * * *}
+      RESYNC_CRON_RULE: ${YTLIVE_SYNC_RESYNC_CRON_RULE:-*/30 * * * * *}
       REDIS_URI: ${YTLIVE_SYNC_REDIS_URI}
       CMS_API_TOKEN: ${YTLIVE_SYNC_CMS_API_TOKEN}
+      GOOGLE_API_KEY: ${YTLIVE_SYNC_GOOGLE_API_KEY}
 
   # www
   www:

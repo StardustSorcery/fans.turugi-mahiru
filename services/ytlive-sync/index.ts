@@ -1,25 +1,129 @@
 import * as log4js from '@/logger';
-import strapi from '@/strapi';
-import * as redis from '@/redis';
 import scheduler from 'node-schedule';
 import { Innertube, YTNodes } from 'youtubei.js';
-import objectHash from 'object-hash';
-import { StrapiResponseData, Video } from '@/types/strapi';
+import { Video } from '@/types/strapi';
+import upsertVideo from '@/libs/upsertVideo';
+import minimist from 'minimist';
+import * as GYoutube from '@/g-youtube';
+import listVideosByPage from '@/libs/listVideosByPage';
 
 const logger = log4js.init().getLogger();
 
 async function main() {
-  logger.info('[System] Launched.');
-
-  const redisClient = await redis.init();
-
   const youtube = await Innertube.create({
     lang: 'ja',
     location: 'JP',
   });
 
+  const gYoutube = await GYoutube.init();
+
+  // Handle CLI arguments
+  const args = minimist(process.argv.slice(2));
+  switch(args._[0]) {
+    default: {
+      break;
+    }
+    case 'add': {
+      switch(args._[1]) {
+        default: {
+          logger.error(`[CLI] unknown command "add ${args._[1]}"`);
+          process.exit(1);
+        }
+        case 'video': {
+          const videoIds = args._.slice(2);
+
+          const videos = await gYoutube.videos
+            .list({
+              part: [
+                'id',
+                'snippet',
+                'liveStreamingDetails',
+                'contentDetails',
+                'status',
+                'statistics',
+                'liveStreamingDetails',
+                'localizations',
+              ],
+              id: videoIds,
+              hl: 'ja',
+            })
+            .then(res => {
+              return res.data.items || [];
+            })
+            .catch((err: Error) => {
+              logger.error(`[YouTube#videos.list] ${err.message}`);
+              throw err;
+            });
+
+          const now = Date.now();
+
+          await Promise
+            .allSettled(videos.map(async (video) => {
+              const videoId = video.id;
+              if(!videoId) return null;
+
+              const record: Omit<Video, 'etag' | 'raw'> = {
+                provider: 'youtube',
+                videoId,
+                type: video.liveStreamingDetails ? 'LiveStream' : 'UploadedVideo',
+                title: video.snippet?.title || '',
+                description: video.snippet?.description || '',
+                thumbnails:
+                  video.snippet?.thumbnails
+                    ? (
+                      Object.values(video.snippet.thumbnails)
+                        .map(t => ({
+                          url: t.url,
+                          width: t.width || -1,
+                          height: t.height || -1,
+                        }))
+                    )
+                    : [{
+                      url: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+                      width: -1,
+                      height: -1,
+                    }],
+                author: {
+                  authorId: video.snippet?.channelId || null,
+                  title: video.snippet?.channelTitle || null,
+                },
+                isInProgressLiveStream:
+                  video.liveStreamingDetails && video.liveStreamingDetails.actualStartTime && !video.liveStreamingDetails.actualEndTime
+                    ? new Date(video.liveStreamingDetails.actualStartTime).getTime() > now
+                    : false,
+                isUpcomingLiveStream:
+                  video.liveStreamingDetails && !video.liveStreamingDetails.actualStartTime && video.liveStreamingDetails.scheduledStartTime
+                    ? new Date(video.liveStreamingDetails.scheduledStartTime).getTime() < now
+                    : false,
+                videoPublishedAt: video.snippet?.publishedAt || null,
+                scheduledStartsAt: video.liveStreamingDetails?.scheduledStartTime || null,
+                scheduledEndsAt: video.liveStreamingDetails?.scheduledEndTime || null,
+                startedAt: video.liveStreamingDetails?.actualStartTime || null,
+                endedAt: video.liveStreamingDetails?.actualEndTime || null,
+                client: 'googleapis.youtube.js',
+              };
+              
+              await upsertVideo(record, video)
+                .catch((err: Error) => {
+                  logger.error(`[upsertVideo] ${err.message}`);
+                  throw err;
+                });
+
+              return;
+            }))
+            .then(result => {
+              logger.info(`[CLI] ${result.filter(r => r.status === 'fulfilled').length}/${result.length} was fulfilled.`);
+            });
+
+          process.exit(0);
+        }
+      }
+    }
+  }
+
+  // Register sync-livestream-schedule task
   scheduler.scheduleJob(
-    process.env.CRON_RULE || '*/30 * * * * *',
+    process.env.SYNC_CRON_RULE || process.env.CRON_RULE || '*/30 * * * * *',
     async () => {
       try {
         // fetch live streams from "live" feed
@@ -29,7 +133,7 @@ async function main() {
             return channel.getLiveStreams();
           })
           .then(channel => {
-            logger.debug(`[Innertube#channel] Fetched ${channel.videos.length} live streams.`);
+            logger.debug(`[Sync Task] Fetched ${channel.videos.length} live streams.`);
             return channel.videos;
           })
           .catch(err => {
@@ -37,13 +141,11 @@ async function main() {
             throw err;
           });
 
-        await redis.connect(redisClient);
-
         await Promise.allSettled(liveStreams.map(async (video) => {
           try {
             // check Etag (MD5 hash)
             if(!(video instanceof YTNodes.Video)) {
-              logger.warn(`[Task] Skipping video "${video.title}": the type "${video.type}" is not acceptable.`);
+              logger.warn(`[Sync Task] Skipping video "${video.title}": the type "${video.type}" is not acceptable.`);
               return;
             }
 
@@ -68,122 +170,143 @@ async function main() {
               client: 'youtubei.js',
             };
 
-            const etag = objectHash.MD5(record);
+            await upsertVideo(record, video);
 
-            const isUpdated = await redisClient
-              .hGet(redis.keys.videoEtagHash, video.id)
-              .then(cachedEtag => {
-                return etag !== cachedEtag;
-              })
-              .catch(err => {
-                err.message = `[Redis.HGET(videoEtagHash)] ${err.message}`;
-                throw err;
-              });
-
-            if(!isUpdated) {
-              logger.info(`[Task] Skipping video "${video.title}" (${video.id}): already up-to-date.`);
-              return;
-            }
-
-            // get current entry id
-            const entryId = await strapi
-              .find<StrapiResponseData<Video>[]>(
-                'videos',
-                {
-                  fields: [],
-                  filters: {
-                    provider: 'youtube',
-                    videoId: video.id,
-                  },
-                  pagination: {
-                    start: 0,
-                    limit: 1,
-                    withCount: false,
-                  },
-                }
-              )
-              .then(result => {
-                return result.data[0]?.id || null;
-              })
-              .catch(err => {
-                err.message = `[Strapi.find<Video[]>] ${err.message}`;
-                throw err;
-              });
-
-            // create or update record
-            const fullRecord: Video = {
-              ...record,
-              etag,
-              raw: video,
-            };
-
-            if(entryId === null) {
-              await strapi
-                .create<StrapiResponseData<Video>>(
-                  'videos',
-                  fullRecord,
-                  {
-                    fields: [],
-                  }
-                )
-                .then(result => {
-                  logger.debug(`[Strapi.create<Video>] Created video entry (id: ${result.data.id}).`);
-                })
-                .catch(err => {
-                  err.message = `[Strapi.create<Video>] ${err.message}`;
-                  throw err;
-                });
-            }
-            else {
-              await strapi
-                .update<StrapiResponseData<Video>>(
-                  'videos',
-                  entryId,
-                  fullRecord,
-                  {
-                    fields: [],
-                  }
-                )
-                .then(() => {
-                  logger.debug(`[Strapi.update<Video>] Updated video entry (id: ${entryId}).`)
-                })
-                .catch(err => {
-                  err.message = `[Strapi.update<Video>] ${err.message}`;
-                  throw err;
-                });
-            }
-
-            // store etag
-            await redisClient
-              .hSet(redis.keys.videoEtagHash, video.id, etag)
-              .then(() => {
-                logger.debug(`[Redis.HSET(videoEtagHash)] Stored etag of the video "${video.title}" (${video.id}).`);
-                return;
-              })
-              .catch(err => {
-                err.message = `[Redis.HSET(videoEtagHash)] ${err.message}`;
-                throw err;
-              });
+            return;
           }
           catch(err) {
             if(err instanceof Error) {
-              logger.error(`[Task] ${err.toString()}`);
+              logger.error(`[Sync Task] ${err.toString()}`);
             }
             else {
-              logger.error('[Task] Unknown error occured.');
+              logger.error('[Sync Task] Unknown error occured.');
             }
             throw err;
           }
         })).then(results => {
-          logger.info(`[Task] Successfully processed ${results.filter(r => r.status === 'fulfilled').length}/${results.length}.`);
+          logger.info(`[Sync Task] Successfully processed ${results.filter(r => r.status === 'fulfilled').length}/${results.length}.`);
         });
       }
       catch(err) {
         if(err instanceof Error) {
-          logger.error(`[Main] ${err.toString()}`);
+          logger.error(`[Sync Task] ${err.toString()}`);
         }
         else {
-          logger.error('[Main] Unknown error occured.');
+          logger.error('[Sync Task] Unknown error occured.');
+        }
+      }
+    }
+  );
+
+  // Register resync-records task
+  scheduler.scheduleJob(
+    process.env.RESYNC_CRON_RULE || '0 0 0 * * *',
+    async () => {
+      const tasks = [];
+
+      try {
+        // List existing records
+        for(let i = 1; true; i++) {
+          const targetRecords = await listVideosByPage({ page: i, pageSize: 50 });
+
+          if(targetRecords.length === 0) break;
+
+          // Get latest data
+          const videos = await gYoutube.videos
+            .list({
+              part: [
+                'id',
+                'snippet',
+                'liveStreamingDetails',
+                'contentDetails',
+                'status',
+                'statistics',
+                'liveStreamingDetails',
+                'localizations',
+              ],
+              id: targetRecords.map(r => r.attributes.videoId),
+              hl: 'ja',
+            })
+            .then(res => {
+              return res.data.items || [];
+            })
+            .catch((err: Error) => {
+              logger.error(`[YouTube#videos.list] ${err.message}`);
+              throw err;
+            });
+
+          // Update records
+          tasks.push(...(videos.map(async (video) => {
+            const videoId = video.id;
+            if(!videoId) return null;
+
+            const recordId = targetRecords.find(r => r.attributes.videoId === videoId)?.id;
+            if(!recordId) return null;
+
+            const now = Date.now();
+
+            const record: Omit<Video, 'etag' | 'raw'> = {
+              provider: 'youtube',
+              videoId,
+              type: video.liveStreamingDetails ? 'LiveStream' : 'UploadedVideo',
+              title: video.snippet?.title || '',
+              description: video.snippet?.description || '',
+              thumbnails:
+                video.snippet?.thumbnails
+                  ? (
+                    Object.values(video.snippet.thumbnails)
+                      .map(t => ({
+                        url: t.url,
+                        width: t.width || -1,
+                        height: t.height || -1,
+                      }))
+                  )
+                  : [{
+                    url: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+                    width: -1,
+                    height: -1,
+                  }],
+              author: {
+                authorId: video.snippet?.channelId || null,
+                title: video.snippet?.channelTitle || null,
+              },
+              isInProgressLiveStream:
+                video.liveStreamingDetails && video.liveStreamingDetails.actualStartTime && !video.liveStreamingDetails.actualEndTime
+                  ? new Date(video.liveStreamingDetails.actualStartTime).getTime() > now
+                  : false,
+              isUpcomingLiveStream:
+                video.liveStreamingDetails && !video.liveStreamingDetails.actualStartTime && video.liveStreamingDetails.scheduledStartTime
+                  ? new Date(video.liveStreamingDetails.scheduledStartTime).getTime() < now
+                  : false,
+              videoPublishedAt: video.snippet?.publishedAt || null,
+              scheduledStartsAt: video.liveStreamingDetails?.scheduledStartTime || null,
+              scheduledEndsAt: video.liveStreamingDetails?.scheduledEndTime || null,
+              startedAt: video.liveStreamingDetails?.actualStartTime || null,
+              endedAt: video.liveStreamingDetails?.actualEndTime || null,
+              client: 'googleapis.youtube.js',
+            };
+
+            await upsertVideo(record, video, recordId)
+              .catch((err: Error) => {
+                logger.error(`[upsertVideo] ${err.message}`);
+                throw err;
+              });
+
+            return;
+           })));
+        }
+
+        await Promise.allSettled(tasks)
+          .then(result => {
+            logger.info(`[Resync Task] ${result.filter(r => r.status === 'fulfilled').length}/${result.length} was fulfilled.`);
+          });
+      }
+      catch(err) {
+        if(err instanceof Error) {
+          logger.error(`[Resync Task] ${err.toString()}`);
+        }
+        else {
+          logger.error('[Resync Task] Unknown error occured.');
         }
       }
     }

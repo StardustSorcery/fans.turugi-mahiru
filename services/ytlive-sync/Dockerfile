@@ -47,10 +47,12 @@ USER node
 ENV TZ=Asia/Tokyo
 
 ENV YT_CHANNEL_ID "UCSzT-rU62SSiham-g1Dj9yw"
-ENV CRON_RULE "*/30 * * * * *"
+ENV SYNC_CRON_RULE "*/30 * * * * *"
+ENV RESYNC_CRON_RULE "0 0 0 * * *"
 ENV REDIS_URI redis://redis/1
 ENV REDIS_VIDEO_ETAG_HASH_KEY ytlive-sync:video-etag-hash
 ENV CMS_URL http://cms:1337/
 ENV CMS_API_TOKEN ""
+ENV GOOGLE_API_KEY ""
 
 CMD ["node", "./dist/index.js"]
