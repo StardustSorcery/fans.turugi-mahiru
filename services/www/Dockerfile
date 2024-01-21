@@ -54,6 +54,8 @@ ENV PORT 80
 ENV HOSTNAME "0.0.0.0"
 ENV TZ=Asia/Tokyo
 
+ENV REDIS_URI=redis://redis/1
+ENV REDIS_VIDEO_ETAG_HASH_KEY=ytlive-sync:video-etag-hash
 ENV GOOGLE_APPLICATION_CREDENTIALS=/secrets/firebase-admin.json
 ENV CMS_URL=http://cms:1337/
 ENV CMS_API_TOKEN=""
