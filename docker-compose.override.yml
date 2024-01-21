@@ -53,6 +53,16 @@ services:
     environment:
       REDIS_URI: ${REDIS_URI:-redis://redis/1}
 
+  # ranking
+  ranking-aggregate:
+    profiles:
+      - ranking
+    depends_on:
+      - cms
+    build:
+      context: ./services/ranking-aggregate
+      dockerfile: Dockerfile
+
   # www
   www:
     profiles:

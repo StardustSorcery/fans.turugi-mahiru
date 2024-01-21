@@ -26,6 +26,14 @@ services:
       CMS_API_TOKEN: ${YTLIVE_SYNC_CMS_API_TOKEN}
       GOOGLE_API_KEY: ${YTLIVE_SYNC_GOOGLE_API_KEY}
 
+  # ranking
+  ranking-aggregate:
+    image: localhost/fans_turugi-mahiru/ranking-aggregate
+    environment:
+      TZ: Asia/Tokyo
+      CRON_RULE: ${RANKING_AGGREGATE_CRON_RULE:-0 0 2 * * *}
+      CMS_API_TOKEN: ${RANKING_AGGREGATE_CMS_API_TOKEN}
+
   # www
   www:
     image: localhost/fans_turugi-mahiru/www
