@@ -12,6 +12,7 @@ export default function TabNavigationWrapper() {
   ) : (
     <TabNavigation
       centered
+      mb={4}
     />
   );
 }

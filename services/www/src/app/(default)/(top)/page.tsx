@@ -96,7 +96,7 @@ export default async function TopPage() {
 
       <Box
         component="main"
-        my={4}
+        mb={4}
       >
         <Container
           maxWidth="lg"
