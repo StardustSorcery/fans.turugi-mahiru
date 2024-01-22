@@ -1,11 +1,8 @@
-import NextLink from "next/link";
 import {
   Box,
-  Breadcrumbs,
   Chip,
   Container,
   Divider,
-  Link,
   Paper,
   Stack,
   Typography,
@@ -13,7 +10,6 @@ import {
 import Heading1 from "@/components/Heading/Heading1"
 import { notFound } from "next/navigation";
 import NewsHeaderImg from "./_components/NewsHeaderImg";
-import { NavigateNext } from "@mui/icons-material";
 import MD2Material from "@/components/MD2Material/MD2Material";
 import getNewsByName from "@/app/_libs/strapi/news/getNewsByName";
 import NewsBreadcrumbs from "./_components/NewsBreadcrumbs";
