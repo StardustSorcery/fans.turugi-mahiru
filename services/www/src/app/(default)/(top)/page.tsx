@@ -171,7 +171,7 @@ export default async function TopPage() {
               >
                 <Button
                   LinkComponent={NextLink}
-                  href="/news"
+                  href="/ranking"
                   variant="outlined"
                   color="secondary"
                   sx={{
