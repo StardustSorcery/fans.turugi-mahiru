@@ -9,16 +9,28 @@ import {
   DialogProps,
   DialogTitle,
   IconButton,
+  Slide,
   Stack,
   Typography,
 } from "@mui/material";
 import VideoInputField from "./VideoInputField";
-import { Fragment, useCallback, useContext, useEffect, useState } from "react";
+import { Fragment, forwardRef, useCallback, useContext, useEffect, useState } from "react";
 import { RankingUserVoting, StrapiResponseData, Video } from "@/types/strapi";
 import { VideoItem } from "./VideoItem";
 import axios, { AxiosError } from "axios";
 import { appContext } from "@/components/AppRegistry/AppContext";
 import { SaveStatus } from "./SaveStatus";
+import { Hint } from "@/components/Hint";
+import { TransitionProps } from "@mui/material/transitions";
+
+const SlideTransition = forwardRef(function SlideTransition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export default function VotingDialog({
   open,
@@ -187,6 +199,7 @@ export default function VotingDialog({
       scroll="paper"
       maxWidth="sm"
       fullWidth
+      TransitionComponent={SlideTransition}
       {...props}
     >
       <DialogTitle
@@ -207,6 +220,36 @@ export default function VotingDialog({
           />
         </IconButton>
         投票
+
+        <Hint
+          ButtonProps={{
+            sx: {
+              ml: 1,
+            },
+          }}
+          PopoverProps={{
+            anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'left',
+            },
+            transformOrigin: {
+              vertical: 'top',
+              horizontal: 'left',
+            },
+          }}
+          hint={
+            <>
+              <Typography
+              >
+                それぞれのタレントに最大 5 つの動画・配信を投票できます.
+              </Typography>
+              <Typography
+              >
+                順位ごとにポイントが異なり, 集計にはポイントが使用されます.
+              </Typography>
+            </>
+          }
+        />
 
         <Box
           flexGrow={1}

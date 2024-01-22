@@ -16,6 +16,7 @@ import {
   WarningAmberOutlined,
 } from '@mui/icons-material';
 import { StrapiResponseData, Video } from '@/types/strapi';
+import { near } from '@/utils/size';
 
 export function VideoItem({
   rank = 1,
@@ -85,7 +86,12 @@ export function VideoItem({
 
         <Box
           component="img"
-          src={`https://i.ytimg.com/vi/${video.attributes.videoId}/hqdefault.jpg`}
+          src={
+            video.attributes.thumbnails
+              .find(t => t.height === near(video.attributes.thumbnails.map(t => t.height), 480))
+              ?.url ||
+            '/_resources/images/no-image.jpg'
+          }
           sx={{
             objectFit: 'cover',
             height: theme => theme.spacing(9),

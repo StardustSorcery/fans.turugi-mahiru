@@ -124,6 +124,17 @@ export interface RankingUserVoting {
   };
 }
 
+export interface Ranking {
+  aggregatedAt: string;
+  scoredVideos: {
+    id: number;
+    score: number;
+    video: {
+      data: StrapiResponseData<Video>;
+    };
+  }[];
+}
+
 export interface Contact {
   body: string;
   firstName: string;

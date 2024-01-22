@@ -37,6 +37,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
           },
           populate: [
             'videos',
+            'videos.thumbnails',
+            'videos.author',
           ],
           pagination: {
             page: 1,
