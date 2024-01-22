@@ -22,13 +22,22 @@ services:
       YT_CHANNEL_ID: ${YTLIVE_SYNC_YT_CHANNEL_ID:-UCSzT-rU62SSiham-g1Dj9yw}
       SYNC_CRON_RULE: ${YTLIVE_SYNC_SYNC_CRON_RULE:-*/30 * * * * *}
       RESYNC_CRON_RULE: ${YTLIVE_SYNC_RESYNC_CRON_RULE:-*/30 * * * * *}
-      REDIS_URI: ${YTLIVE_SYNC_REDIS_URI}
+      REDIS_URI: ${REDIS_URI}
       CMS_API_TOKEN: ${YTLIVE_SYNC_CMS_API_TOKEN}
       GOOGLE_API_KEY: ${YTLIVE_SYNC_GOOGLE_API_KEY}
+
+  # ranking
+  ranking-aggregate:
+    image: localhost/fans_turugi-mahiru/ranking-aggregate
+    environment:
+      TZ: Asia/Tokyo
+      CRON_RULE: ${RANKING_AGGREGATE_CRON_RULE:-0 0 2 * * *}
+      CMS_API_TOKEN: ${RANKING_AGGREGATE_CMS_API_TOKEN}
 
   # www
   www:
     image: localhost/fans_turugi-mahiru/www
     environment:
       TZ: Asia/Tokyo
+      REDIS_URI: ${REDIS_URI}
       CMS_API_TOKEN: ${WWW_CMS_API_TOKEN}
