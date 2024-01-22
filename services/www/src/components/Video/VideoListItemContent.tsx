@@ -126,6 +126,7 @@ export default function VideoListItemContent({
                   sx={{
                     fontSize: theme => theme.typography.subtitle2.fontSize,
                     fontWeight: theme => theme.typography.fontWeightRegular,
+                    color: theme => theme.palette.text.secondary,
                     display: '-webkit-box',
                     WebkitBoxOrient: 'vertical',
                     WebkitLineClamp: 1,
