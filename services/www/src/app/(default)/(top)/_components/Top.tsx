@@ -26,7 +26,10 @@ export default function Top({
   return (
     <Container
       maxWidth="xl"
-      sx={{
+      sx={(isMobile && latestLiveStream) ? {
+        mb: 4,
+        ...sx,
+      } : {
         ...sx,
       }}
       {...props}

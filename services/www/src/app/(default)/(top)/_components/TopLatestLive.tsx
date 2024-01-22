@@ -24,7 +24,6 @@ export default function TopLatestLive({
     <Box
       component={Paper}
       variant="outlined"
-      display="inline-block"
       sx={{
         ...sx,
       }}

@@ -58,7 +58,7 @@ export default async function TopPage() {
         >
           <Box
             component={Paper}
-            elevation={6}
+            variant="outlined"
           >
             <Heading1
               icon="🩹"
