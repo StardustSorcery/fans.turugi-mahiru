@@ -9,38 +9,18 @@ import { StrapiResponse } from "strapi-sdk-js";
 import { Privacy, StrapiResponseData } from "@/types/strapi";
 import date2str from "@/utils/date2str";
 import MD2Material from "@/components/MD2Material/MD2Material";
+import getPrivacy from "@/app/_libs/strapi/privacy/getPrivacy";
 
 export const metadata = {
   title: 'プライバシーポリシー | 剣城まひる.fans - 非公式ファンサイト',
   description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
 };
 
-function fetchPrivacy(): Promise<{
-  data: StrapiResponse<StrapiResponseData<Privacy>> | null;
-  error: Error | null;
-}> {
-  const url = `http://localhost:${process.env.PORT || '80'}/api/privacy`;
-
-  return fetch(url, { cache: 'no-cache' })
-    .then(resp => (resp.json() as unknown) as StrapiResponse<StrapiResponseData<Privacy>>)
-    .then(data => ({
-      data,
-      error: null,
-    }))
-    .catch((err: Error) => {
-      console.error(err);
-      return {
-        data: null,
-        error: err,
-      };
-    });
-}
-
 export default async function PrivacyPage() {
   const {
     data: privacy,
     error: privacyError,
-  } = await fetchPrivacy();
+  } = await getPrivacy();
 
   return (
     <>
@@ -73,7 +53,7 @@ export default async function PrivacyPage() {
                 py={3}
               >
                 <MD2Material
-                  markdown={privacy.data.attributes.body}
+                  markdown={privacy.attributes.body}
                 />
 
                 <Typography
@@ -86,7 +66,7 @@ export default async function PrivacyPage() {
                   variant="subtitle2"
                   mt={4}
                 >
-                  {date2str(new Date(privacy.data.attributes.updatedAt))} 最終更新・発効
+                  {date2str(new Date(privacy.attributes.updatedAt))} 最終更新・発効
                 </Typography>
               </Box>
             )}
