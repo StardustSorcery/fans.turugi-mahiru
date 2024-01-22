@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import strapi, { upsertVideo } from "../_libs/strapi";
+import strapi, { upsertVideo } from "../../_libs/strapi";
 import { StrapiResponseData, Video } from "@/types/strapi";
-import * as Youtubei from "../_libs/youtubei";
+import * as Youtubei from "../../_libs/youtubei";
 
 export function GET(req: NextRequest): Promise<NextResponse> {
   return (async () => {

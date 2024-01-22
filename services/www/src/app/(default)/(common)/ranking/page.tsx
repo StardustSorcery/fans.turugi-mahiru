@@ -5,7 +5,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import strapi from "@/app/api/_libs/strapi";
+import strapi from "@/app/_libs/strapi";
 import { Ranking, StrapiResponseData } from "@/types/strapi";
 import RankingMain from "./_components/Ranking";
 

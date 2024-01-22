@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import strapi from "@/app/api/_libs/strapi";
+import strapi from "@/app/_libs/strapi";
 import { Contact, StrapiResponseData } from "@/types/strapi";
 import validator from 'validator';
 

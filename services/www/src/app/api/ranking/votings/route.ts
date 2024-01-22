@@ -2,7 +2,7 @@ import { RankingUserVoting, StrapiResponseData } from "@/types/strapi";
 import { auth } from "@/utils/firebaseAdmin/auth";
 import { FirebaseError } from "firebase-admin";
 import { NextRequest, NextResponse } from "next/server";
-import strapi from "../../_libs/strapi";
+import strapi from "../../../_libs/strapi";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   return (async () => {

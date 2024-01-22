@@ -1,4 +1,4 @@
-import strapi from '@/app/api/_libs/strapi';
+import strapi from '@/app/_libs/strapi';
 import type {
   Terms,
   StrapiResponseData,

@@ -1,4 +1,4 @@
-import strapi from "@/app/api/_libs/strapi";
+import strapi from "@/app/_libs/strapi";
 import { auth } from "@/utils/firebaseAdmin/auth";
 import { NextRequest, NextResponse } from "next/server";
 import FormData from "form-data";

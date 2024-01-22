@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as Youtubei from "../../_libs/youtubei";
+import * as Youtubei from "../../../_libs/youtubei";
 import axios from "axios";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
