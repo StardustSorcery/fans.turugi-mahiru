@@ -17,6 +17,7 @@ import {
 } from '@mui/icons-material';
 import { StrapiResponseData, Video } from '@/types/strapi';
 import { near } from '@/utils/size';
+import VideoListItemContent from '@/components/Video/VideoListItemContent';
 
 export function VideoItem({
   rank = 1,
@@ -84,44 +85,16 @@ export function VideoItem({
           </IconButton>
         </Stack>
 
-        <Box
-          component="img"
-          src={
-            video.attributes.thumbnails
-              .find(t => t.height === near(video.attributes.thumbnails.map(t => t.height), 480))
-              ?.url ||
-            '/_resources/images/no-image.jpg'
-          }
-          sx={{
-            objectFit: 'cover',
-            height: theme => theme.spacing(9),
-            width: theme => theme.spacing(16),
-            minWidth: theme => theme.spacing(16),
-            borderRadius: theme => `${theme.shape.borderRadius / 2}px`,
+        <VideoListItemContent
+          video={video}
+          thumbnailProps={{
+            sx: {
+              width: theme => theme.spacing(16),
+              minWidth: theme => theme.spacing(16),
+            },
           }}
+          title={video.attributes.title}
         />
-
-        <Stack
-          ml={1}
-          justifyContent="center"
-          flexGrow={1}
-          sx={{
-            height: theme => theme.spacing(9),
-          }}
-        >
-          <Typography
-            component="div"
-            variant="body1"
-            sx={{
-              display: '-webkit-box',
-              WebkitBoxOrient: 'vertical',
-              WebkitLineClamp: 2,
-              overflow: 'hidden',
-            }}
-          >
-            {video.attributes.title}
-          </Typography>
-        </Stack>
 
         <Stack
         >

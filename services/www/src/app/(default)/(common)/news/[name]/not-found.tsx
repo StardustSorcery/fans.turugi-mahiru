@@ -7,9 +7,10 @@ import {
   Typography,
 } from "@mui/material";
 import NextLink from "next/link";
+import NotFound from "./_components/NotFound";
 
 export const metadata = {
-  title: '剣城まひる.fans - 非公式ファンサイト',
+  title: 'ページが見つかりませんでした | 剣城まひる.fans - 非公式ファンサイト',
   description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
 };
 
@@ -27,29 +28,8 @@ export default function NewsItemNotFound() {
             component={Paper}
             elevation={6}
           >
-            <Stack
-              alignItems="center"
-              gap={3}
-              px={2}
-              py={4}
-            >
-              <Typography
-                component="p"
-                variant="subtitle1"
-                align="center"
-              >
-                お探しのニュースは見つかりませんでした.
-              </Typography>
-
-              <Button
-                LinkComponent={NextLink}
-                href="/news"
-                variant="outlined"
-                color="secondary"
-              >
-                ニュース 一覧
-              </Button>
-            </Stack>
+            <NotFound
+            />
           </Box>
         </Container>
       </Box>

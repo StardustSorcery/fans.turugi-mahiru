@@ -5,62 +5,21 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import strapi from "@/app/api/_libs/strapi";
+import strapi from "@/app/_libs/strapi";
 import { Ranking, StrapiResponseData } from "@/types/strapi";
 import RankingMain from "./_components/Ranking";
+import getRanking from "@/app/_libs/strapi/ranking/getRanking";
 
 export const metadata = {
   title: 'ランキング | 剣城まひる.fans - 非公式ファンサイト',
   description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
 };
 
-async function fetchRanking(): Promise<{ data: StrapiResponseData<Ranking>; error: null} | { data: null; error: any; }> {
-  return await strapi
-    .find<StrapiResponseData<Ranking>[]>(
-      'rankings',
-      {
-        populate: [
-          'scoredVideos',
-          'scoredVideos.video',
-          'scoredVideos.video.thumbnails',
-          'scoredVideos.video.author',
-        ],
-        sort: [
-          'aggregatedAt:desc',
-        ],
-        pagination: {
-          page: 1,
-          pageSize: 1,
-          withCount: false,
-        },
-      }
-    )
-    .then(res => {
-      const data = res.data[0] || null;
-
-      if(data && data.attributes.scoredVideos.length > 100) {
-        data.attributes.scoredVideos = data.attributes.scoredVideos.slice(0, 100);
-      }
-
-      return {
-        data: data,
-        error: null,
-      };
-    })
-    .catch(err => {
-      console.error(err);
-      return {
-        data: null,
-        error: err,
-      };
-    });
-}
-
 export default async function RankingPage() {
   const {
     data,
     error,
-  } = await fetchRanking();
+  } = await getRanking({ limit: 100 });
 
   return (
     <>

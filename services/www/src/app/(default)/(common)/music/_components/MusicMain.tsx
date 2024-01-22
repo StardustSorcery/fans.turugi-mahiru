@@ -5,6 +5,7 @@ import {
   List,
   Menu,
   MenuItem,
+  NoSsr,
   Stack,
   StackProps,
   ToggleButton,
@@ -13,10 +14,11 @@ import {
   Toolbar,
 } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
-import MusicListItem from "./MusicListItem";
 import { Sort } from "@mui/icons-material";
+import VideoListItem from "@/components/Video/VideoListItem";
+import date2str from "@/utils/date2str";
 
-export default function Music({
+export default function MusicMain({
   defaultCategory = '__all__',
   musicVideos,
   ...props 
@@ -153,13 +155,35 @@ export default function Music({
 
       <List
       >
-        {filteredMusicVideos.map((musicVideo) => (
-          <MusicListItem
-            key={musicVideo.id}
-            musicVideo={musicVideo}
-            showCategory={true}
-          />
-        ))}
+        {filteredMusicVideos.map((musicVideo) => {
+          const video = musicVideo.attributes.video.data;
+          const isOriginal = musicVideo.attributes.originalArtist.authorId === 'youtube:UCSzT-rU62SSiham-g1Dj9yw';
+
+          return (
+            <VideoListItem
+              key={musicVideo.id}
+              item={{
+                video,
+                title: musicVideo.attributes.title,
+                subtitle: (
+                  video.attributes.videoPublishedAt
+                    ? <NoSsr>公開日: {date2str(new Date(video.attributes.videoPublishedAt))}</NoSsr>
+                    : undefined
+                ),
+                tags: [
+                  ...(isOriginal
+                    ? [
+                      'オリジナル楽曲',
+                    ]
+                    : [
+                      'カバー楽曲',
+                      `原曲: ${musicVideo.attributes.originalArtist.title}`,
+                    ]),
+                ],
+              }}
+            />
+          );
+        })}
       </List>
     </Stack>
   );

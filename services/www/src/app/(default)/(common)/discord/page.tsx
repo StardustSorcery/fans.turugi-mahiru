@@ -4,44 +4,18 @@ import AbstractSection from "./_components/AbstractSection";
 import TitleSection from "./_components/TitleSection";
 import { DiscordInvitation } from "@/types/strapi";
 import { notoColorEmoji } from "@/app/fonts";
+import getDiscordInvitation from "@/app/_libs/strapi/discord/getDiscordInvitation";
 
 export const metadata = {
   title: 'Discord サーバー『剣城まひるの救急箱🩹』 | 剣城まひる.fans - 非公式ファンサイト',
   description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
 };
 
-async function fetchDiscordInvitation(): Promise<{
-  data: {
-    invitationIsActive: boolean;
-    invitationURL: string;
-  } | null;
-  error: Error | null;
-}> {
-  const url = `http://localhost:${process.env.PORT || '80'}/api/discord/invitation`;
-
-  return await fetch(url, { cache: 'no-cache' })
-    .then(resp => (resp.json() as unknown) as DiscordInvitation)
-    .then(resp => ({
-      data: {
-        invitationIsActive: resp.isActive,
-        invitationURL: resp.url || '',
-      },
-      error: null,
-    }))
-    .catch((err: Error) => {
-      console.error(err);
-      return {
-        data: null,
-        error: err,
-      };
-    });
-}
-
 export default async function DiscordPage() {
   const {
-    data,
+    data: invitation,
     error,
-  } = await fetchDiscordInvitation();
+  } = await getDiscordInvitation();
 
   return (
     <>
@@ -51,8 +25,8 @@ export default async function DiscordPage() {
       >
         <TitleSection
           isError={!!error}
-          isActive={data ? data.invitationIsActive : false}
-          url={data ? data.invitationURL : ''}
+          isActive={invitation?.isActive || false}
+          url={invitation?.url || '#'}
         />
 
         <AbstractSection

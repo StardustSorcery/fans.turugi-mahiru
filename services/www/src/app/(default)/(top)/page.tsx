@@ -5,6 +5,7 @@ import {
   Container,
   Divider,
   List,
+  NoSsr,
   Paper,
   Stack,
   Typography,
@@ -13,71 +14,34 @@ import Top from "./_components/Top";
 import SideNavTriggerWrapper from "./_components/SideNavTriggerWrapper";
 import TabNavigationWrapper from "./_components/TabNavigationWrapper";
 import Heading1 from '@/components/Heading/Heading1';
-import { StrapiResponse } from 'strapi-sdk-js';
-import { News, StrapiResponseData, Video } from '@/types/strapi';
 import NewsItem from '@/components/News/NewsItem';
 import FloatingAccountMenu from './_components/FloatingAccountMenu';
+import getLatestLiveStream from '@/app/_libs/strapi/schedule/getLatestLiveStream';
+import listNews from '@/app/_libs/strapi/news/listNews';
+import getRanking from '@/app/_libs/strapi/ranking/getRanking';
+import VideoListItem from '@/components/Video/VideoListItem';
+import date2str from '@/utils/date2str';
 
 export const metadata = {
   title: '剣城まひる.fans - 非公式ファンサイト',
   description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
 };
 
-function fetchLatestLiveStream(): Promise<{
-  data: StrapiResponseData<Video> | null;
-  error: Error | null;
-}> {
-  const url = `http://localhost:${process.env.PORT || '80'}/api/schedule/latest`;
-
-  return fetch(url, { cache: 'no-cache' })
-    .then(resp => {
-      if(!resp.ok) throw new Error(resp.status.toString());
-      else return (resp.json() as unknown) as StrapiResponseData<Video> | null;
-    })
-    .then(data => ({
-      data,
-      error: null,
-    }))
-    .catch((err: Error) => {
-      console.error('schedule req', err);
-      return {
-        data: null,
-        error: err,
-      };
-    });
-};
-
-function fetchLatestNews(): Promise<{
-  data: StrapiResponse<StrapiResponseData<News>[]> | null;
-  error: Error | null;
-}> {
-  const url = `http://localhost:${process.env.PORT || '80'}/api/news?` + (new URLSearchParams({ page: '1', pageSize: '5' })).toString();
-
-  return fetch(url, { cache: 'no-cache' })
-    .then(resp => (resp.json() as unknown) as StrapiResponse<StrapiResponseData<News>[]>)
-    .then(data => ({
-      data,
-      error: null,
-    }))
-    .catch((err: Error) => {
-      console.error(err);
-      return {
-        data: null,
-        error: err,
-      };
-    });
-};
-
 export default async function TopPage() {
   const {
     data: latestLiveStream,
     error: latestLiveStreamError,
-  } = await fetchLatestLiveStream();
+  } = await getLatestLiveStream();
 
   const {
     data: latestNews,
     error: latestNewsError,
-  } = await fetchLatestNews();
+  } = await listNews({ page: 1, pageSize: 5 });
+
+  const {
+    data: ranking,
+    error: rankingError,
+  } = await getRanking({ limit: 5 });
 
   return (
     <>
@@ -96,14 +60,14 @@ export default async function TopPage() {
 
       <Box
         component="main"
-        my={4}
+        mb={4}
       >
         <Container
           maxWidth="lg"
         >
           <Box
             component={Paper}
-            elevation={6}
+            variant="outlined"
           >
             <Heading1
               icon="🩹"
@@ -124,7 +88,7 @@ export default async function TopPage() {
               ) : (
                 <List
                 >
-                  {latestNews.data.map(newsItem => (
+                  {latestNews.map(newsItem => (
                     <NewsItem
                       key={newsItem.id}
                       newsItem={newsItem}
@@ -154,6 +118,72 @@ export default async function TopPage() {
               </Stack>
             </Box>
           </Box>
+
+          <Box
+            mt={4}
+            component={Paper}
+            variant="outlined"
+          >
+            <Heading1
+              icon="🐥"
+              text="ランキング"
+            />
+            <Divider
+            />
+            <Box
+            >
+              {(rankingError || !ranking) ? (
+                <Typography
+                  align="center"
+                  component="p"
+                  variant="subtitle1"
+                >
+                  ランキングの取得に失敗しました.
+                </Typography>
+              ) : (
+                <List
+                >
+                  {ranking.attributes.scoredVideos.map(scoredVideo => {
+                    const video = scoredVideo.video.data;
+
+                    return (
+                      <VideoListItem
+                        item={{
+                          video,
+                          title: video.attributes.title,
+                          subtitle: (
+                            video.attributes.videoPublishedAt
+                              ? <NoSsr>公開日: {date2str(new Date(video.attributes.videoPublishedAt))}</NoSsr>
+                              : undefined
+                          ),
+                        }}
+                      />
+                    );
+                  })}
+                </List>
+              )}
+
+              <Stack
+                px={2}
+                pt={1}
+                pb={2}
+                alignItems="center"
+              >
+                <Button
+                  LinkComponent={NextLink}
+                  href="/ranking"
+                  variant="outlined"
+                  color="secondary"
+                  sx={{
+                    mr: 1,
+                  }}
+                >
+                  すべてのランキングを見る
+                </Button>
+              </Stack>
+            </Box>
+          </Box>
+
         </Container>
       </Box>
     </>

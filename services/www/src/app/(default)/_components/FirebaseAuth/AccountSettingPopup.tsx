@@ -7,16 +7,28 @@ import {
   DialogProps,
   DialogTitle,
   IconButton,
+  Slide,
   Stack,
   Tab,
   Tabs,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
-import { useContext, useState } from "react";
+import { forwardRef, useContext, useState } from "react";
 import DefaultContext from "../DefaultContext";
 import { Close } from "@mui/icons-material";
 import LinkProvierForm from "@/components/Firebase/LinkProviderForm";
 import { UpdateProfileForm } from "@/components/Firebase/UpdateProfileForm";
+import { TransitionProps } from "@mui/material/transitions";
+
+const SlideTransition = forwardRef(function SlideTransition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 type TabPanelProps = BoxProps<
   'div',
@@ -64,11 +76,15 @@ export default function AccountSettingPopup({
 
   const [ tab, setTab ] = useState<'profile' | 'signin-method'>('profile');
 
+  const isMobile = useMediaQuery('(max-width:809px)');
+
   return (
     <Dialog
       open={isOpen}
       maxWidth="sm"
       fullWidth
+      fullScreen={isMobile}
+      TransitionComponent={SlideTransition}
       {...props}
     >
       <DialogTitle
@@ -94,18 +110,20 @@ export default function AccountSettingPopup({
       <DialogContent
       >
         <Stack
-          flexDirection="row"
+          flexDirection={isMobile ? 'column' : 'row'}
         >
           <Tabs
-            orientation="vertical"
-            variant="scrollable"
+            orientation={isMobile ? 'horizontal' : 'vertical'}
+            centered={isMobile}
+            variant={isMobile ? 'fullWidth' : 'scrollable'}
             textColor="secondary"
             indicatorColor="secondary"
             value={tab}
             onChange={(e, newValue) => {
               setTab(newValue);
             }}
-            sx={{
+            sx={isMobile ? {
+            } : {
               borderRight: 1,
               borderColor: 'divider',
             }}
@@ -122,6 +140,7 @@ export default function AccountSettingPopup({
 
           <Box
             flexGrow={1}
+            mt={isMobile ? 2 : 0}
           >
             <TabPanel
               tabValue={tab}
