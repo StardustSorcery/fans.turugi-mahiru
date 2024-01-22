@@ -2,7 +2,7 @@ import strapi from "@/app/api/_libs/strapi";
 import Heading1 from "@/components/Heading/Heading1";
 import { MusicVideo, StrapiResponseData } from "@/types/strapi";
 import { Box, Container, Paper, Typography } from "@mui/material";
-import Music from "./_components/Music";
+import MusicMain from "./_components/MusicMain";
 
 export const metadata = {
   title: 'ミュージック | 剣城まひる.fans - 非公式ファンサイト',
@@ -89,9 +89,10 @@ export default async function MusicPage({
                   データの取得に失敗しました.
                 </Typography>
               ) : (
-                <Music
+                <MusicMain
                   defaultCategory="__all__"
                   musicVideos={musicVideos}
+                  error={musicVideosError || !musicVideos}
                 />
               )}
           </Box>

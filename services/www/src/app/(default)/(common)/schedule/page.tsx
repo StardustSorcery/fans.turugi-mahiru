@@ -1,17 +1,12 @@
 import getSchedule from "@/app/_libs/strapi/schedule/getSchedule";
 import { listInProgressLiveStreams } from "@/app/_libs/strapi/schedule/listInProgressLiveStreams";
 import Heading1 from "@/components/Heading/Heading1";
-import Heading2 from "@/components/Heading/Heading2";
-import VideoListItem from "@/components/Video/VideoListItem";
 import { LiveScheduleByDate } from "@/types/schedule";
 import { StrapiResponseData, Video } from "@/types/strapi";
-import date2str from "@/utils/date2str";
 import {
   Box,
   Container,
-  List,
   Paper,
-  Typography,
 } from "@mui/material";
 import { StrapiResponse } from "strapi-sdk-js";
 import ScheduleMain from "./_components/ScheduleMain";

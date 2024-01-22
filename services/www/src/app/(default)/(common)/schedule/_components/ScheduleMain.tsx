@@ -63,7 +63,11 @@ export default function ScheduleMain({
                   {inProgressLiveStreams.map(video => (
                     <VideoListItem
                       key={`InProgress#${video.id}`}
-                      video={video}
+                      item={{
+                        video,
+                        title: video.attributes.title,
+                        isInProgress: true,
+                      }}
                     />
                   ))}
                 </List>
@@ -87,7 +91,11 @@ export default function ScheduleMain({
                   {bucket.videos.map(video => (
                     <VideoListItem
                       key={`Schedule#${video.id}`}
-                      video={video}
+                      item={{
+                        video,
+                        title: video.attributes.title,
+                        scheduledStartsAt: video.attributes.scheduledStartsAt ? new Date(video.attributes.scheduledStartsAt) : undefined,
+                      }}
                     />
                   ))}
                 </List>
