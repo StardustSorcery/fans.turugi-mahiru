@@ -1,3 +1,5 @@
+import getSchedule from "@/app/_libs/strapi/schedule/getSchedule";
+import { listInProgressLiveStreams } from "@/app/_libs/strapi/schedule/listInProgressLiveStreams";
 import Heading1 from "@/components/Heading/Heading1";
 import Heading2 from "@/components/Heading/Heading2";
 import VideoListItem from "@/components/Video/VideoListItem";
@@ -12,6 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import { StrapiResponse } from "strapi-sdk-js";
+import ScheduleMain from "./_components/ScheduleMain";
 
 export const metadata = {
   title: 'スケジュール | 剣城まひる.fans - 非公式ファンサイト',
@@ -78,12 +81,14 @@ export default async function SchedulePage() {
   const {
     data: inProgressLiveStreams,
     error: inProgressLiveStreamsError,
-  } = await fetchInProgressLiveStreams();
+  } = await listInProgressLiveStreams();
 
+  const now = new Date();
+  const beforeAt = new Date((new Date(now.getFullYear(), now.getMonth(), now.getDate())).getTime() + (1000 * 60 * 60 * 24 * 7));
   const {
     data: schedule,
     error: scheduleError,
-  } = await fetchSchedule();
+  } = await getSchedule({ afterAt: now, beforeAt });
 
   return (
     <>
@@ -103,82 +108,11 @@ export default async function SchedulePage() {
               text="スケジュール"
             />
 
-            {(inProgressLiveStreamsError || !inProgressLiveStreams || scheduleError || !schedule) ? (
-              <Typography
-                align="center"
-                component="p"
-                variant="subtitle1"
-              >
-                スケジュールの取得に失敗しました.
-              </Typography>
-            ) : (
-              <>
-                {inProgressLiveStreams.data.length > 0 && (
-                  <Box
-                    component="section"
-                  >
-                    <Heading2
-                      icon="▶"
-                      text="現在ライブ配信中"
-                      sx={{
-                        mx: 2,
-                      }}
-                    />
-
-                    <List
-                    >
-                      {inProgressLiveStreams.data.map(video => (
-                        <VideoListItem
-                          key={`InProgress#${video.id}`}
-                          video={video}
-                        />
-                      ))}
-                    </List>
-                  </Box>
-                )}
-
-                {schedule.length === 0 ? (
-                  <Box
-                    px={2}
-                    py={3}
-                  >
-                    <Typography
-                      align="center"
-                      component="p"
-                      variant="subtitle1"
-                    >
-                      直近の配信予定はありません.
-                    </Typography>
-                  </Box>
-                ) : (
-                  <>
-                    {schedule.map((bucket) => (
-                      <Box
-                        component="section"
-                        key={bucket.date}
-                      >
-                        <Heading2
-                          text={`${date2str(new Date(bucket.date))} (${['日','月','火','水','木','金','土'][new Date(bucket.date).getDay()]})`}
-                          sx={{
-                            mx: 2,
-                          }}
-                        />
-
-                        <List
-                        >
-                          {bucket.videos.map(video => (
-                            <VideoListItem
-                              key={`Schedule#${video.id}`}
-                              video={bucket.videos[0]}
-                            />
-                          ))}
-                        </List>
-                      </Box>
-                    ))}
-                  </>
-                )}
-              </>
-            )}
+            <ScheduleMain
+              inProgressLiveStreams={inProgressLiveStreams}
+              schedule={schedule}
+              error={inProgressLiveStreamsError || scheduleError || null}
+            />
           </Box>
         </Container>
       </Box>
