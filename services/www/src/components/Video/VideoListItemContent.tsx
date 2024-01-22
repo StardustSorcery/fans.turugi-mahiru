@@ -141,6 +141,7 @@ export default function VideoListItemContent({
             {tags && tags.length > 0 && (
               <Stack
                 flexDirection="row"
+                flexWrap="wrap"
                 columnGap={1}
                 rowGap={.5}
               >

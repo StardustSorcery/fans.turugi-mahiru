@@ -114,6 +114,7 @@ export default function NewsItem({
             {newsItem.attributes.newsTags.data.length > 0 && (
               <Stack
                 flexDirection="row"
+                flexWrap="wrap"
                 columnGap={1}
                 rowGap={.5}
               >
