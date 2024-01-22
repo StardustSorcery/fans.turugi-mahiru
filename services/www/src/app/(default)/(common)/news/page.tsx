@@ -8,34 +8,12 @@ import {
 } from "@mui/material";
 import Heading1 from "@/components/Heading/Heading1";
 import LinkPagination from "@/components/Pagination/LinkPagination";
-import { StrapiResponse } from "strapi-sdk-js";
-import { News, StrapiResponseData, StrapiResponseMeta } from "@/types/strapi";
 import NewsItem from "@/components/News/NewsItem";
+import listNews from "@/app/_libs/strapi/news/listNews";
 
 export const metadata = {
   title: 'ニュース | 剣城まひる.fans - 非公式ファンサイト',
   description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
-};
-
-function fetchNews(page: number): Promise<{
-  data: StrapiResponse<StrapiResponseData<News>[]> | null;
-  error: Error | null;
-}> {
-  const url = `http://localhost:${process.env.PORT || '80'}/api/news?` + (new URLSearchParams({ page: String(page), pageSize: '10' })).toString();
-
-  return fetch(url, { cache: 'no-cache' })
-    .then(resp => (resp.json() as unknown) as StrapiResponse<StrapiResponseData<News>[]>)
-    .then(data => ({
-      data,
-      error: null,
-    }))
-    .catch((err: Error) => {
-      console.error(err);
-      return {
-        data: null,
-        error: err,
-      };
-    });
 };
 
 export default async function NewsPage({
@@ -45,8 +23,9 @@ export default async function NewsPage({
 }) {
   const {
     data: news,
+    meta: newsMeta,
     error: newsError,
-  } = await fetchNews(Number(searchParams?.page) || 1);
+  } = await listNews({ page: Number(searchParams?.page) || 1, pageSize: 10 });
 
   return (
     <>
@@ -67,26 +46,27 @@ export default async function NewsPage({
             />
 
             {(newsError || !news) ? (
-                <Typography
-                  align="center"
-                  component="p"
-                  variant="subtitle1"
+              <Typography
+                align="center"
+                component="p"
+                variant="subtitle1"
+              >
+                ニュースの取得に失敗しました.
+              </Typography>
+            ) : (
+              <>
+                <List
                 >
-                  ニュースの取得に失敗しました.
-                </Typography>
-              ) : (
-                <>
-                  <List
-                  >
-                    {news.data.map(newsItem => (
-                      <NewsItem
-                        key={newsItem.id}
-                        newsItem={newsItem}
-                        divider
-                      />
-                    ))}
-                  </List>
+                  {news.map(newsItem => (
+                    <NewsItem
+                      key={newsItem.id}
+                      newsItem={newsItem}
+                      divider
+                    />
+                  ))}
+                </List>
 
+                {newsMeta && (
                   <Stack
                     alignItems="center"
                     p={2}
@@ -95,14 +75,15 @@ export default async function NewsPage({
                       rootPath="/news"
                       variant="outlined"
                       shape="circular"
-                      count={(news.meta as StrapiResponseMeta).pagination?.pageCount || 1}
+                      count={newsMeta.pagination?.pageCount || 1}
                       color="secondary"
                       boundaryCount={1}
                       siblingCount={0}
                     />
                   </Stack>
-                </>
-              )}
+                )}
+              </>
+            )}
           </Box>
         </Container>
       </Box>

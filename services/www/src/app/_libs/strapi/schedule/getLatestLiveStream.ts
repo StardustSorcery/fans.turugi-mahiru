@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from 'next/server';
 import strapi from '@/app/api/_libs/strapi';
 import type {
   Video,
@@ -6,7 +5,7 @@ import type {
   ScheduleExcluded,
 } from '@/types/strapi';
 
-export async function GET(req: NextRequest): Promise<NextResponse> {
+export default async function getLatestLiveStream(): Promise<{ data: StrapiResponseData<Video> | null; error: any; }> {
   try {
     const now = Date.now();
 
@@ -25,10 +24,16 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             withCount: false,
           },
         },
-      );
+      )
+      .then(res => {
+        return res.data[0] || null;
+      });
 
-    if(inProgressLiveStreams.data.length > 0) {
-      return NextResponse.json(inProgressLiveStreams.data[0]);
+    if(inProgressLiveStreams) {
+      return {
+        data: inProgressLiveStreams,
+        error: null,
+      };
     }
 
     // if not found, fetch latest upcoming
@@ -64,16 +69,20 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             withCount: false,
           },
         },
-      );
+      )
+      .then(res => {
+        return res.data[0] || null;
+      });
 
-    if(latestUpcomingLiveStreams.data.length === 0) {
-      return NextResponse.json(null);
-    }
-
-    return NextResponse.json(latestUpcomingLiveStreams.data[0]);
+    return {
+      data: latestUpcomingLiveStreams,
+      error: null,
+    };
   }
   catch(err) {
-    console.error(err);
-    return NextResponse.json({}, { status: 500 });
+    return {
+      data: null,
+      error: err,
+    };
   }
 }
