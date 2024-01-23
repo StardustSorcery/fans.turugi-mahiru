@@ -10,11 +10,22 @@ import { Privacy, StrapiResponseData } from "@/types/strapi";
 import date2str from "@/utils/date2str";
 import MD2Material from "@/components/MD2Material/MD2Material";
 import getPrivacy from "@/app/_libs/strapi/privacy/getPrivacy";
+import { Metadata } from "next";
+import deepmerge from "deepmerge";
+import defaultMetadata from "@/constants/defaultMetadata";
 
-export const metadata = {
-  title: 'プライバシーポリシー | 剣城まひる.fans - 非公式ファンサイト',
-  description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
-};
+export const metadata = deepmerge<Metadata>(
+  defaultMetadata,
+  {
+    title: 'プライバシーポリシー | 剣城まひる.fans - 非公式ファンサイト',
+    openGraph: {
+      title: 'プライバシーポリシー | 剣城まひる.fans - 非公式ファンサイト',
+    },
+    twitter: {
+      title: 'プライバシーポリシー | 剣城まひる.fans - 非公式ファンサイト',
+    },
+  }
+);
 
 export default async function PrivacyPage() {
   const {

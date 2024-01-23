@@ -5,11 +5,30 @@ import TitleSection from "./_components/TitleSection";
 import { DiscordInvitation } from "@/types/strapi";
 import { notoColorEmoji } from "@/app/fonts";
 import getDiscordInvitation from "@/app/_libs/strapi/discord/getDiscordInvitation";
+import { Metadata } from "next";
+import deepmerge from "deepmerge";
+import defaultMetadata from "@/constants/defaultMetadata";
 
-export const metadata = {
-  title: 'Discord サーバー『剣城まひるの救急箱🩹』 | 剣城まひる.fans - 非公式ファンサイト',
-  description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
-};
+export const metadata = deepmerge<Metadata>(
+  defaultMetadata,
+  {
+    title: 'Discord サーバー『剣城まひるの救急箱🩹』 | 剣城まひる.fans - 非公式ファンサイト',
+    openGraph: {
+      title: 'Discord サーバー『剣城まひるの救急箱🩹』 | 剣城まひる.fans - 非公式ファンサイト',
+      images: [
+        {
+          url: 'https://turugi-mahiru.fans/og-discord.png',
+          width: 1528,
+          height: 800,
+        },
+      ],
+    },
+    twitter: {
+      title: 'Discord サーバー『剣城まひるの救急箱🩹』 | 剣城まひる.fans - 非公式ファンサイト',
+      images: [ 'https://turugi-mahiru.fans/og-discord.png' ],
+    },
+  }
+);
 
 export default async function DiscordPage() {
   const {

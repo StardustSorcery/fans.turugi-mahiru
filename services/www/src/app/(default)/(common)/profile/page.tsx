@@ -4,11 +4,22 @@ import {
   Paper,
 } from "@mui/material";
 import Profile from "./_components/Profile";
+import { Metadata } from "next";
+import deepmerge from "deepmerge";
+import defaultMetadata from "@/constants/defaultMetadata";
 
-export const metadata = {
-  title: 'プロフィール | 剣城まひる.fans - 非公式ファンサイト',
-  description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
-};
+export const metadata = deepmerge<Metadata>(
+  defaultMetadata,
+  {
+    title: 'プロフィール | 剣城まひる.fans - 非公式ファンサイト',
+    openGraph: {
+      title: 'プロフィール | 剣城まひる.fans - 非公式ファンサイト',
+    },
+    twitter: {
+      title: 'プロフィール | 剣城まひる.fans - 非公式ファンサイト',
+    },
+  }
+);
 
 export default function ProfilePage() {
   return (

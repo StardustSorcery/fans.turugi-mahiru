@@ -10,11 +10,22 @@ import {
 } from "@mui/material";
 import { StrapiResponse } from "strapi-sdk-js";
 import ScheduleMain from "./_components/ScheduleMain";
+import { Metadata } from "next";
+import deepmerge from "deepmerge";
+import defaultMetadata from "@/constants/defaultMetadata";
 
-export const metadata = {
-  title: 'スケジュール | 剣城まひる.fans - 非公式ファンサイト',
-  description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
-};
+export const metadata = deepmerge<Metadata>(
+  defaultMetadata,
+  {
+    title: 'スケジュール | 剣城まひる.fans - 非公式ファンサイト',
+    openGraph: {
+      title: 'スケジュール | 剣城まひる.fans - 非公式ファンサイト',
+    },
+    twitter: {
+      title: 'スケジュール | 剣城まひる.fans - 非公式ファンサイト',
+    },
+  }
+);
 
 function fetchInProgressLiveStreams(): Promise<{
   data: StrapiResponse<StrapiResponseData<Video>[]> | null;

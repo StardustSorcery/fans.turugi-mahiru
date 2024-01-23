@@ -13,6 +13,9 @@ import NewsHeaderImg from "./_components/NewsHeaderImg";
 import MD2Material from "@/components/MD2Material/MD2Material";
 import getNewsByName from "@/app/_libs/strapi/news/getNewsByName";
 import NewsBreadcrumbs from "./_components/NewsBreadcrumbs";
+import { Metadata } from "next";
+import deepmerge from "deepmerge";
+import defaultMetadata from "@/constants/defaultMetadata";
 
 export async function generateMetadata({
   params,
@@ -26,16 +29,26 @@ export async function generateMetadata({
   } = await getNewsByName(params.name);
 
   if(newsItemError || !newsItem) {
-    return {
-      title: '剣城まひる.fans - 非公式ファンサイト',
-      description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
-    };
+    return deepmerge<Metadata>(
+      defaultMetadata,
+      {
+        title: '剣城まひる.fans - 非公式ファンサイト',
+      }
+    );
   }
 
-  return {
-    title: `${newsItem.attributes.title} | ニュース | 剣城まひる.fans - 非公式ファンサイト`,
-    description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
-  };
+  return deepmerge<Metadata>(
+    defaultMetadata,
+    {
+      title: `${newsItem.attributes.title} | ニュース | 剣城まひる.fans - 非公式ファンサイト`,
+      openGraph: {
+        title: `${newsItem.attributes.title} | ニュース | 剣城まひる.fans - 非公式ファンサイト`,
+      },
+      twitter: {
+        title: `${newsItem.attributes.title} | ニュース | 剣城まひる.fans - 非公式ファンサイト`,
+      },
+    }
+  );
 };
 
 export default async function NewsItemPage({

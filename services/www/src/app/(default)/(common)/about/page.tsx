@@ -5,11 +5,22 @@ import {
   Paper,
 } from "@mui/material";
 import About from "./_components/About";
+import { Metadata } from "next";
+import deepmerge from "deepmerge";
+import defaultMetadata from "@/constants/defaultMetadata";
 
-export const metadata = {
-  title: 'このサイトについて | 剣城まひる.fans - 非公式ファンサイト',
-  description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
-};
+export const metadata = deepmerge<Metadata>(
+  defaultMetadata,
+  {
+    title: 'このサイトについて | 剣城まひる.fans - 非公式ファンサイト',
+    openGraph: {
+      title: 'このサイトについて | 剣城まひる.fans - 非公式ファンサイト',
+    },
+    twitter: {
+      title: 'このサイトについて | 剣城まひる.fans - 非公式ファンサイト',
+    },
+  }
+);
 
 export default function AboutPage() {
   return (

@@ -9,11 +9,22 @@ import strapi from "@/app/_libs/strapi";
 import { Ranking, StrapiResponseData } from "@/types/strapi";
 import RankingMain from "./_components/Ranking";
 import getRanking from "@/app/_libs/strapi/ranking/getRanking";
+import { Metadata } from "next";
+import deepmerge from "deepmerge";
+import defaultMetadata from "@/constants/defaultMetadata";
 
-export const metadata = {
-  title: 'ランキング | 剣城まひる.fans - 非公式ファンサイト',
-  description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
-};
+export const metadata = deepmerge<Metadata>(
+  defaultMetadata,
+  {
+    title: 'ランキング | 剣城まひる.fans - 非公式ファンサイト',
+    openGraph: {
+      title: 'ランキング | 剣城まひる.fans - 非公式ファンサイト',
+    },
+    twitter: {
+      title: 'ランキング | 剣城まひる.fans - 非公式ファンサイト',
+    },
+  }
+);
 
 export default async function RankingPage() {
   const {
