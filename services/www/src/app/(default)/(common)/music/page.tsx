@@ -2,11 +2,22 @@ import Heading1 from "@/components/Heading/Heading1";
 import { Box, Container, Paper, Typography } from "@mui/material";
 import MusicMain from "./_components/MusicMain";
 import listMusicVideos from "@/app/_libs/strapi/music/listMusicVideos";
+import { Metadata } from "next";
+import deepmerge from "deepmerge";
+import defaultMetadata from "@/constants/defaultMetadata";
 
-export const metadata = {
-  title: 'ミュージック | 剣城まひる.fans - 非公式ファンサイト',
-  description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
-};
+export const metadata = deepmerge<Metadata>(
+  defaultMetadata,
+  {
+    title: 'ミュージック | 剣城まひる.fans - 非公式ファンサイト',
+    openGraph: {
+      title: 'ミュージック | 剣城まひる.fans - 非公式ファンサイト',
+    },
+    twitter: {
+      title: 'ミュージック | 剣城まひる.fans - 非公式ファンサイト',
+    },
+  }
+);
 
 export default async function MusicPage({
   searchParams,

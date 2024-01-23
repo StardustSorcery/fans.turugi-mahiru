@@ -10,11 +10,22 @@ import Heading1 from "@/components/Heading/Heading1";
 import LinkPagination from "@/components/Pagination/LinkPagination";
 import NewsItem from "@/components/News/NewsItem";
 import listNews from "@/app/_libs/strapi/news/listNews";
+import { Metadata } from "next";
+import deepmerge from "deepmerge";
+import defaultMetadata from "@/constants/defaultMetadata";
 
-export const metadata = {
-  title: 'ニュース | 剣城まひる.fans - 非公式ファンサイト',
-  description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
-};
+export const metadata = deepmerge<Metadata>(
+  defaultMetadata,
+  {
+    title: 'ニュース | 剣城まひる.fans - 非公式ファンサイト',
+    openGraph: {
+      title: 'ニュース | 剣城まひる.fans - 非公式ファンサイト',
+    },
+    twitter: {
+      title: 'ニュース | 剣城まひる.fans - 非公式ファンサイト',
+    },
+  }
+);
 
 export default async function NewsPage({
   searchParams,

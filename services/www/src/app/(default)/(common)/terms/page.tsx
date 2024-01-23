@@ -8,11 +8,22 @@ import Heading1 from "@/components/Heading/Heading1";
 import date2str from "@/utils/date2str";
 import MD2Material from "@/components/MD2Material/MD2Material";
 import getTerms from "@/app/_libs/strapi/terms/getTerms";
+import { Metadata } from "next";
+import deepmerge from "deepmerge";
+import defaultMetadata from "@/constants/defaultMetadata";
 
-export const metadata = {
-  title: '利用規約 | 剣城まひる.fans - 非公式ファンサイト',
-  description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
-};
+export const metadata = deepmerge<Metadata>(
+  defaultMetadata,
+  {
+    title: '利用規約 | 剣城まひる.fans - 非公式ファンサイト',
+    openGraph: {
+      title: '利用規約 | 剣城まひる.fans - 非公式ファンサイト',
+    },
+    twitter: {
+      title: '利用規約 | 剣城まひる.fans - 非公式ファンサイト',
+    },
+  }
+);
 
 export default async function TermsPage() {
   const {
