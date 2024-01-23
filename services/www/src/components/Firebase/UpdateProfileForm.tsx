@@ -77,11 +77,12 @@ export function UpdateProfileForm({
   const photoInputElRef = useRef<HTMLInputElement>(null);
   
   const handlePhotoInputChange: React.ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
-    if(!e.target.files || e.target.files.length === 0) {
+    if(!e.target.files) {
       return;
     }
 
     const file = e.target.files[0];
+    if(!file) return;
 
     if(
       ![

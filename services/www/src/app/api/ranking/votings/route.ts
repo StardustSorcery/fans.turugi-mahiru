@@ -7,7 +7,7 @@ import strapi from "../../../_libs/strapi";
 export async function GET(req: NextRequest): Promise<NextResponse> {
   return (async () => {
     const [ tokenType, idToken ] = (req.headers.get('Authorization') || '').split(' ');
-    if(tokenType !== 'Bearer' || idToken.trim() === '') {
+    if(tokenType !== 'Bearer' || !idToken || idToken.trim() === '') {
       return NextResponse.json({}, { status: 401 });
     }
 
@@ -63,7 +63,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 export async function PUT(req: NextRequest): Promise<NextResponse> {
   return (async () => {
     const [ tokenType, idToken ] = (req.headers.get('Authorization') || '').split(' ');
-    if(tokenType !== 'Bearer' || idToken.trim() === '') {
+    if(tokenType !== 'Bearer' || !idToken || idToken.trim() === '') {
       return NextResponse.json({}, { status: 401 });
     }
 
