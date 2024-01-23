@@ -22,6 +22,11 @@ jobs:
       - name: checkout
         uses: actions/checkout@v3
 
+      - name: use-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+
       - name: package-version
         id: packageVersion
         run: |
