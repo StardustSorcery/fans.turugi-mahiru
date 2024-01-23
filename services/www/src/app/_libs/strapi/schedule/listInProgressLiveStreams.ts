@@ -4,7 +4,7 @@ import type {
   StrapiResponseData,
 } from '@/types/strapi';
 
-export async function listInProgressLiveStreams(): Promise<{ data: StrapiResponseData<Video>[] | null; error: any; }> {
+export default async function listInProgressLiveStreams(): Promise<{ data: StrapiResponseData<Video>[] | null; error: any; }> {
   try {
     const videos = await strapi
       .find<StrapiResponseData<Video>[]>(

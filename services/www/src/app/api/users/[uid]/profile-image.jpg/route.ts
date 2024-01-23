@@ -34,8 +34,10 @@ export async function GET(
         )
         .then(resp => {
           const record = resp.data[0];
+          if(!record) return null;
+
           const profileImageRecord = record.attributes.profileImage.data;
-          if(!record || !profileImageRecord) return null;
+          if(!profileImageRecord) return null;
 
           // get binary
           return axios
@@ -74,7 +76,7 @@ export async function POST(
 ): Promise<NextResponse> {
   return (async () => {
     const [ tokenType, idToken ] = (req.headers.get('Authorization') || '').split(' ');
-    if(tokenType !== 'Bearer' || idToken.trim() === '') {
+    if(tokenType !== 'Bearer' || !idToken || idToken.trim() === '') {
       return NextResponse.json({}, { status: 401 });
     }
 
@@ -202,6 +204,10 @@ export async function POST(
           'delete',
           `/upload/files/${profileImageFileId}`
         );
+    }
+
+    if(!newProfileImageRecordData) {
+      throw new Error('newProfileImageRecordData is empty');
     }
 
     return NextResponse.json({

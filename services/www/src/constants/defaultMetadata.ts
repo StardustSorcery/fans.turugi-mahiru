@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 
 const defaultMetadata: Metadata = {
+  metadataBase: new URL('https://turugi-mahiru.fans/'),
   title: '剣城まひる.fans - 非公式ファンサイト',
   description: 'VTuber『剣城 (つるぎ) まひる』さんの非公式ファンサイト',
   keywords: [ 'VTuber', 'バーチャルYouTuber', '剣城まひる', 'つるぎまひる', 'ファンサイト' ],

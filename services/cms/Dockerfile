@@ -2,7 +2,7 @@ FROM node:14.21.1-alpine3.16 as builder
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
-ARG PUBLIC_URL="https://cms.ha-rehare.fans/"
+ARG PUBLIC_URL="https://cms.turugi-mahiru.fans/"
 ENV PUBLIC_URL=${PUBLIC_URL}
 
 RUN apk update &&\
