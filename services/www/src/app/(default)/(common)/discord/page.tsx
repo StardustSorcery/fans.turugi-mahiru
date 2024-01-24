@@ -9,6 +9,8 @@ import { Metadata } from "next";
 import deepmerge from "deepmerge";
 import defaultMetadata from "@/constants/defaultMetadata";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = deepmerge<Metadata>(
   defaultMetadata,
   {

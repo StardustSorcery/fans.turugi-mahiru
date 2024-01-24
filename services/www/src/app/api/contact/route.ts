@@ -3,6 +3,8 @@ import strapi from "@/app/_libs/strapi";
 import { Contact, StrapiResponseData } from "@/types/strapi";
 import validator from 'validator';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const _contact = await req.json() as { [key:string]: any };
 

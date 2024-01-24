@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import * as Youtubei from "../../../_libs/youtubei";
 import axios from "axios";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest): Promise<NextResponse> {
   return (async () => {
     const searchParams = req.nextUrl.searchParams;

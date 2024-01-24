@@ -3,6 +3,8 @@ import strapi, { upsertVideo } from "../../_libs/strapi";
 import { StrapiResponseData, Video } from "@/types/strapi";
 import * as Youtubei from "../../_libs/youtubei";
 
+export const dynamic = 'force-dynamic';
+
 export function GET(req: NextRequest): Promise<NextResponse> {
   return (async () => {
     const searchParams = req.nextUrl.searchParams;
