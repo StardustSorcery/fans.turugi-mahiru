@@ -29,6 +29,9 @@ export const metadata = deepmerge<Metadata>(
       title: 'Discord サーバー『剣城まひるの救急箱🩹』 | 剣城まひる.fans - 非公式ファンサイト',
       images: [ 'https://turugi-mahiru.fans/og-discord.png' ],
     },
+  },
+  {
+    arrayMerge: (x, y) => y,
   }
 );
 
