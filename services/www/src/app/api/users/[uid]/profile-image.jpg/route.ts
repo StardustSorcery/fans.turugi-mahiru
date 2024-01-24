@@ -6,6 +6,8 @@ import sharp from "sharp";
 import axios from "axios";
 import { StrapiMedia, StrapiResponseData, UserProfile } from "@/types/strapi";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(
   req: NextRequest,
   {

@@ -17,6 +17,8 @@ import { Metadata } from "next";
 import deepmerge from "deepmerge";
 import defaultMetadata from "@/constants/defaultMetadata";
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({
   params,
 }: {

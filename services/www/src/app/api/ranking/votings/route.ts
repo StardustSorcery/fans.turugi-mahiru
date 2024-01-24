@@ -4,6 +4,8 @@ import { FirebaseError } from "firebase-admin";
 import { NextRequest, NextResponse } from "next/server";
 import strapi from "../../../_libs/strapi";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest): Promise<NextResponse> {
   return (async () => {
     const [ tokenType, idToken ] = (req.headers.get('Authorization') || '').split(' ');
