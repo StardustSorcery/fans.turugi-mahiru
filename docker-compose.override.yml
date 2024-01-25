@@ -23,6 +23,13 @@ services:
     ports:
       - ${DB_PORT:-3306}:3306
 
+  redis:
+    image: redis:6.2.14-alpine
+    volumes:
+      - redis_data:/data
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+
   cms:
     depends_on:
       - db
@@ -34,6 +41,28 @@ services:
     volumes:
       - ./services/cms:/app
 
+  # ytlive
+  ytlive-sync:
+    profiles:
+      - ytlive
+    depends_on:
+      - cms
+    build:
+      context: ./services/ytlive-sync
+      dockerfile: Dockerfile
+    environment:
+      REDIS_URI: ${REDIS_URI:-redis://redis/1}
+
+  # ranking
+  ranking-aggregate:
+    profiles:
+      - ranking
+    depends_on:
+      - cms
+    build:
+      context: ./services/ranking-aggregate
+      dockerfile: Dockerfile
+
   # www
   www:
     profiles:
@@ -43,8 +72,14 @@ services:
     build:
       context: ./services/www
       dockerfile: dev.Dockerfile
+      args:
+        CMS_PUBLIC_URL: http://cms.turugi-mahiru.fans.127.0.0.1.nip.io:${HTTP_PORT:-8080}/
+    environment:
+      REDIS_URI: ${REDIS_URI:-redis://redis/1}
     volumes:
       - ./services/www:/app
+      - ${GOOGLE_APPLICATION_CREDENTIALS}:/secrets/firebase-admin.json
 
 volumes:
   db_data:
+  redis_data:

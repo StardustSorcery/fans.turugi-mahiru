@@ -41,16 +41,8 @@
         }
       },
       "type": "uid",
-      "required": true
-    },
-    "metadata": {
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      },
-      "type": "json",
-      "required": true
+      "required": true,
+      "targetField": "name"
     },
     "body": {
       "pluginOptions": {
@@ -67,13 +59,28 @@
       "target": "api::news-tag.news-tag",
       "mappedBy": "news"
     },
-    "targetDomain": {
+    "targetServices": {
+      "type": "component",
+      "repeatable": true,
       "pluginOptions": {
         "i18n": {
           "localized": false
         }
       },
-      "type": "string"
+      "component": "types.string",
+      "required": true
+    },
+    "thumbnail": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     }
   }
 }

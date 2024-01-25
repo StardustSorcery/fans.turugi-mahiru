@@ -1,0 +1,58 @@
+name: build ytlive-sync
+
+permissions: write-all
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/build_ytlive-sync.yml
+      - services/ytlive-sync/**
+
+jobs:
+  build-and-push:
+    name: build and push
+    runs-on:
+      - self-hosted
+      - KAGOYA01
+      - Linux
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: use-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+
+      - name: package-version
+        id: packageVersion
+        working-directory: services/ytlive-sync
+        run: |
+          echo "version=$(npm pkg get version | tr -d '"')" >> $GITHUB_OUTPUT
+
+      - name: login-ghcr
+        uses: docker/login-action@v2.0.0
+        with:
+          registry: ghcr.io
+          username: stardustsorcery
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: metadata
+        id: dockerMetadata
+        uses: docker/metadata-action@v4.0.1
+        with:
+          images: ghcr.io/stardustsorcery/fans_turugi-mahiru_ytlive-sync
+          tags: |
+            type=semver,pattern={{major}}.{{minor}}.{{patch}},value=${{ steps.packageVersion.outputs.version }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ steps.packageVersion.outputs.version }}
+            type=semver,pattern={{major}},value=${{ steps.packageVersion.outputs.version }}
+
+      - name: build-and-push
+        uses: docker/build-push-action@v3.0.0
+        with:
+          context: ./services/ytlive-sync
+          push: true
+          tags: ${{ steps.dockerMetadata.outputs.tags }}
+          labels: ${{ steps.dockerMetadata.outputs.labels }}

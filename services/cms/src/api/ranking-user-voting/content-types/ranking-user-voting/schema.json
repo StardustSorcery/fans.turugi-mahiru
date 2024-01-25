@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "ranking_user_votings",
+  "info": {
+    "singularName": "ranking-user-voting",
+    "pluralName": "ranking-user-votings",
+    "displayName": "Ranking User Voting"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "uid": {
+      "type": "string",
+      "required": true
+    },
+    "videos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::video.video"
+    }
+  }
+}

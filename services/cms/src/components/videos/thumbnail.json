@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_videos_thumbnails",
+  "info": {
+    "displayName": "Thumbnail",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "url": {
+      "type": "string",
+      "required": true
+    },
+    "width": {
+      "type": "integer",
+      "required": true
+    },
+    "height": {
+      "type": "integer",
+      "required": true
+    }
+  }
+}

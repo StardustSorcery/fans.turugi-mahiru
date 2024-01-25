@@ -1,0 +1,44 @@
+{
+  "kind": "collectionType",
+  "collectionName": "music_videos",
+  "info": {
+    "singularName": "music-video",
+    "pluralName": "music-videos",
+    "displayName": "Music Video",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "type": "string",
+      "required": true
+    },
+    "originalArtist": {
+      "type": "component",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "videos.author"
+    },
+    "video": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::video.video"
+    }
+  }
+}

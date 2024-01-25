@@ -1,0 +1,20 @@
+{
+  "kind": "singleType",
+  "collectionName": "schedule_excludeds",
+  "info": {
+    "singularName": "schedule-excluded",
+    "pluralName": "schedule-excludeds",
+    "displayName": "Schedule Excluded"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "videos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::video.video"
+    }
+  }
+}
