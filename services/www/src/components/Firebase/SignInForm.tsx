@@ -1,5 +1,7 @@
+'use client';
 import { singInWithGoogle, singInWithTwitter } from "@/utils/firebase/auth";
 import {
+  Box,
   Button,
   Link,
   Stack,
@@ -35,6 +37,7 @@ export default function SignInForm({
           color="inherit"
           fullWidth
           sx={{
+            py: 0,
             textTransform: 'unset',
             color: theme => theme.palette.grey['800'],
           }}
@@ -53,7 +56,18 @@ export default function SignInForm({
           }}
           disabled={isProcessing}
         >
-          Google
+          <Box
+            component="img"
+            src="/_resources/images/social/g-logo.png"
+            sx={{
+              boxSizing: 'content-box',
+              width: '20px',
+              height: '20px',
+              p: '10px',
+              ml: '2px',
+            }}
+          />
+          Google でログイン
         </Button>
 
         <Button
@@ -61,6 +75,7 @@ export default function SignInForm({
           color="inherit"
           fullWidth
           sx={{
+            py: 0,
             textTransform: 'unset',
             color: theme => theme.palette.grey['800'],
           }}
@@ -79,7 +94,18 @@ export default function SignInForm({
           }}
           disabled={isProcessing}
         >
-          X (旧 Twitter)
+          <Box
+            component="img"
+            src="/_resources/images/social/x_black.png"
+            sx={{
+              boxSizing: 'content-box',
+              width: '20px',
+              height: '20px',
+              p: '10px',
+              ml: '2px',
+            }}
+          />
+          X (旧 Twitter) でログイン
         </Button>
       </Stack>
 
