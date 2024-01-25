@@ -3,6 +3,7 @@ import SignInForm from "@/components/Firebase/SignInForm";
 import { Button, Dialog, DialogActions, DialogContent, DialogProps, DialogTitle } from "@mui/material";
 import { useContext } from "react";
 import DefaultContext from "../DefaultContext";
+import { useSnackbar } from "notistack";
 
 export default function SignInPopup({
   ...props
@@ -13,6 +14,8 @@ export default function SignInPopup({
       close,
     },
   } = useContext(DefaultContext);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   return (
     <Dialog
@@ -33,7 +36,11 @@ export default function SignInPopup({
       >
         <SignInForm
           onComplete={() => {
+            enqueueSnackbar('ログインしました', { variant: 'success' });
             close();
+          }}
+          onError={() => {
+            enqueueSnackbar('ログイン中にエラーが発生しました', { variant: 'error' });
           }}
         />
       </DialogContent>

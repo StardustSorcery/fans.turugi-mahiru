@@ -7,12 +7,12 @@ import {
   Stack,
   StackProps,
   TextField,
-  Typography,
 } from "@mui/material";
 import NextLink from 'next/link';
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import validator from 'validator';
+import { useSnackbar } from "notistack";
 
 export default function ContactForm({
   ...props
@@ -20,12 +20,23 @@ export default function ContactForm({
   'div',
   {}
 >): React.ReactNode {
+  const { enqueueSnackbar } = useSnackbar();
+
   const [ firstName, setFirstName ] = useState<string>('');
   const [ familyName, setFamilyName ] = useState<string>('');
   const [ organization, setOrganization ] = useState<string>('');
   const [ email, setEmail ] = useState<string>('');
   const [ body, setBody ] = useState<string>('');
   const [ privacyIsChecked, setPrivacyIsChecked ] = useState<boolean>(false);
+
+  const clearForm = useCallback(() => {
+    setFirstName('');
+    setFamilyName('');
+    setOrganization('');
+    setEmail('');
+    setBody('');
+    setPrivacyIsChecked(false);
+  }, []);
 
   const [ isReady, setIsReady ] = useState<boolean>(false);
 
@@ -47,11 +58,9 @@ export default function ContactForm({
   ]);
 
   const [ isProcessing, setIsProcessing ] = useState<boolean>(false);
-  const [ error, setError ] = useState<Error | null>(null);
 
   const handleSubmitClick = useCallback(() => {
     setIsProcessing(true);
-    setError(null);
 
     return axios
       .request({
@@ -65,9 +74,12 @@ export default function ContactForm({
           body,
         }
       })
+      .then(() => {
+        enqueueSnackbar('お問い合わせを送信しました', { variant: 'success' });
+        clearForm();
+      })
       .catch(err => {
-        console.error(err);
-        setError(err);
+        enqueueSnackbar('お問い合わせの送信中にエラーが発生しました', { variant: 'error' });
       })
       .finally(() => {
         setIsProcessing(false);
@@ -78,6 +90,7 @@ export default function ContactForm({
     organization,
     email,
     body,
+    clearForm,
   ]);
 
   return (
@@ -184,15 +197,6 @@ export default function ContactForm({
       >
         送信
       </Button>
-
-      {error && (
-        <Typography
-          align="center"
-          color="error"
-        >
-          送信中にエラーが発生しました。
-        </Typography>
-      )}
     </Stack>
   );
 }
