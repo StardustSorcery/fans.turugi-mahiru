@@ -63,63 +63,65 @@ export async function upsertVideo(record: Omit<Video, 'etag' | 'raw'>, raw: any,
         throw err;
       });
 
-    // create or update record
-    const fullRecord: Video = {
-      ...record,
-      etag,
-      raw,
-    };
+  // create or update record
+  const fullRecord: Video = {
+    ...record,
+    etag,
+    raw,
+  };
 
-    let upsertedRecord;
-    if(entryId === null) {
-      upsertedRecord = await strapi
-        .create<StrapiResponseData<Video>>(
-          'videos',
-          fullRecord,
-          {
-            populate: [
-              'thumbnails',
-              'auhtor',
-            ],
-          }
-        )
-        .then(res => {
-          return res.data;
-        })
-        .catch(err => {
-          err.message = `[Strapi.create<Video>] ${err.message}`;
-          throw err;
-        });
-    }
-    else {
-      upsertedRecord = await strapi
-        .update<StrapiResponseData<Video>>(
-          'videos',
-          entryId,
-          fullRecord,
-          {
-            populate: [
-              'thumbnails',
-              'auhtor',
-            ],
-          }
-        )
-        .then(res => {
-          return res.data;
-        })
-        .catch(err => {
-          err.message = `[Strapi.update<Video>] ${err.message}`;
-          throw err;
-        });
-    }
-
-    // store etag
-    await redisClient
-      .hSet(redis.keys.videoEtagHash, `youtube:${record.videoId}`, etag)
+  let upsertedRecord;
+  if(entryId === null) {
+    upsertedRecord = await strapi
+      .create<StrapiResponseData<Video>>(
+        'videos',
+        fullRecord,
+        {
+          populate: [
+            'thumbnails',
+            'auhtor',
+          ],
+        }
+      )
+      .then(res => {
+        return res.data;
+      })
       .catch(err => {
-        err.message = `[Redis.HSET(videoEtagHash)] ${err.message}`;
+        err.message = `[Strapi.create<Video>] ${err.message}`;
         throw err;
       });
+  }
+  else {
+    upsertedRecord = await strapi
+      .update<StrapiResponseData<Video>>(
+        'videos',
+        entryId,
+        fullRecord,
+        {
+          populate: [
+            'thumbnails',
+            'auhtor',
+          ],
+        }
+      )
+      .then(res => {
+        return res.data;
+      })
+      .catch(err => {
+        err.message = `[Strapi.update<Video>] ${err.message}`;
+        throw err;
+      });
+  }
+
+  // store etag
+  await redisClient
+    .hSet(redis.keys.videoEtagHash, `youtube:${record.videoId}`, etag)
+    .catch(err => {
+      err.message = `[Redis.HSET(videoEtagHash)] ${err.message}`;
+      throw err;
+    });
+
+  await redisClient.disconnect();
 
   return upsertedRecord;
 }
