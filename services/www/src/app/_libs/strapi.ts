@@ -77,7 +77,10 @@ export async function upsertVideo(record: Omit<Video, 'etag' | 'raw'>, raw: any,
           'videos',
           fullRecord,
           {
-            fields: [],
+            populate: [
+              'thumbnails',
+              'auhtor',
+            ],
           }
         )
         .then(res => {
@@ -95,7 +98,10 @@ export async function upsertVideo(record: Omit<Video, 'etag' | 'raw'>, raw: any,
           entryId,
           fullRecord,
           {
-            fields: [],
+            populate: [
+              'thumbnails',
+              'auhtor',
+            ],
           }
         )
         .then(res => {
