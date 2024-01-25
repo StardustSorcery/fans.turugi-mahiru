@@ -11,11 +11,13 @@ import { useState } from "react";
 
 export default function SignInForm({
   onComplete = () => {},
+  onError = () => {},
   ...props
 }: StackProps<
   'div',
   {
     onComplete?: () => any;
+    onError?: (error: any) => any;
   }
 >): React.ReactNode {
   const [ isProcessing, setIsProcessing ] = useState<boolean>(false);
@@ -42,6 +44,9 @@ export default function SignInForm({
               .then(() => {
                 onComplete();
               })
+              .catch(err => {
+                onError(err);
+              })
               .finally(() => {
                 setIsProcessing(false);
               });
@@ -64,6 +69,9 @@ export default function SignInForm({
             singInWithTwitter()
               .then(() => {
                 onComplete();
+              })
+              .catch(err => {
+                onError(err);
               })
               .finally(() => {
                 setIsProcessing(false);

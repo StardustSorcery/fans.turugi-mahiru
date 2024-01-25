@@ -17,6 +17,7 @@ import {
   StackProps,
   Typography,
 } from "@mui/material";
+import { useSnackbar } from "notistack";
 import {
   useContext,
   useEffect,
@@ -45,6 +46,8 @@ export default function AccountMenu({
     signInPopup,
     accountSettingPopup,
   } = useContext(DefaultContext);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const [ menuTarget, setMenuTarget ] = useState<HTMLElement | null>(null);
   useEffect(() => {
@@ -154,7 +157,13 @@ export default function AccountMenu({
 
             <MenuItem
               onClick={() => {
-                signOut();
+                signOut()
+                  .then(() => {
+                    enqueueSnackbar('ログアウトしました', { variant: 'success' });
+                  })
+                  .catch(err => {
+                    enqueueSnackbar('ログアウト中にエラーが発生しました', { variant: 'error' });
+                  });
                 setMenuTarget(null);
               }}
             >
