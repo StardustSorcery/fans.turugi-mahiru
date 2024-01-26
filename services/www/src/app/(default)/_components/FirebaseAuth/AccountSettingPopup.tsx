@@ -20,6 +20,7 @@ import { Close } from "@mui/icons-material";
 import LinkProvierForm from "@/components/Firebase/LinkProviderForm";
 import { UpdateProfileForm } from "@/components/Firebase/UpdateProfileForm";
 import { TransitionProps } from "@mui/material/transitions";
+import { useSnackbar } from "notistack";
 
 const SlideTransition = forwardRef(function SlideTransition(
   props: TransitionProps & {
@@ -73,6 +74,8 @@ export default function AccountSettingPopup({
       close,
     }  
   } = useContext(DefaultContext);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const [ tab, setTab ] = useState<'profile' | 'signin-method'>('profile');
 
@@ -157,6 +160,12 @@ export default function AccountSettingPopup({
               title="ログイン方法"
             >
               <LinkProvierForm
+                onCompleteUnlink={() => {
+                  enqueueSnackbar('連携を解除しました', { variant: 'success' });
+                }}
+                onFail={() => {
+                  enqueueSnackbar('エラーが発生しました', { variant: 'error' });
+                }}
               />
             </TabPanel>
           </Box>

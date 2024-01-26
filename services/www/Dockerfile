@@ -6,6 +6,14 @@ ARG CMS_PUBLIC_URL=https://cms.turugi-mahiru.fans/
 ENV CMS_PUBLIC_URL=${CMS_PUBLIC_URL}
 ENV NEXT_PUBLIC_CMS_PUBLIC_URL=${CMS_PUBLIC_URL}
 
+ARG FIREBASE_MODE=production
+ENV FIREBASE_MODE=${FIREBASE_MODE}
+ENV NEXT_PUBLIC_FIREBASE_MODE=${FIREBASE_MODE}
+
+ARG PUBLIC_URL=https://www.turugi-mahiru.fans.127.0.0.1.nip.io:8080/
+ENV PUBLIC_URL=${PUBLIC_URL}
+ENV NEXT_PUBLIC_PUBLIC_URL=${PUBLIC_URL}
+
 ######## DEV DEPS ########
 # Install dependencies only when needed
 FROM base AS dev-deps

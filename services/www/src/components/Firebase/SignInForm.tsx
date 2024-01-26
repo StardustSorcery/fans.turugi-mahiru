@@ -12,13 +12,11 @@ import NextLink from "next/link";
 import { useState } from "react";
 
 export default function SignInForm({
-  onComplete = () => {},
   onError = () => {},
   ...props
 }: StackProps<
   'div',
   {
-    onComplete?: () => any;
     onError?: (error: any) => any;
   }
 >): React.ReactNode {
@@ -44,13 +42,8 @@ export default function SignInForm({
           onClick={() => {
             setIsProcessing(true);
             singInWithGoogle()
-              .then(() => {
-                onComplete();
-              })
               .catch(err => {
                 onError(err);
-              })
-              .finally(() => {
                 setIsProcessing(false);
               });
           }}
@@ -82,13 +75,8 @@ export default function SignInForm({
           onClick={() => {
             setIsProcessing(true);
             singInWithTwitter()
-              .then(() => {
-                onComplete();
-              })
               .catch(err => {
                 onError(err);
-              })
-              .finally(() => {
                 setIsProcessing(false);
               });
           }}

@@ -6,10 +6,11 @@ import {
   type NextOrObserver,
   GoogleAuthProvider,
   TwitterAuthProvider,
-  signInWithPopup,
-  linkWithPopup,
   unlink,
   updateProfile,
+  signInWithRedirect,
+  getRedirectResult as _getRedirectResult,
+  linkWithRedirect,
 } from 'firebase/auth';
 import { app, getAnalytics } from './init';
 import { logEvent } from 'firebase/analytics';
@@ -22,39 +23,35 @@ export function onAuthStateChanged(cb: NextOrObserver<User>) {
   return _onAuthStateChanged(auth, cb);
 }
 
+// Redirect Result
+export async function getRedirectResult() {
+  return await _getRedirectResult(auth);
+}
+
 // Sign In
 export async function singInWithGoogle() {
-  const analytics = await getAnalytics();
-  if(!analytics) return;
-
   const provider = new GoogleAuthProvider();
-  const userCredential = await signInWithPopup(auth, provider);
+  await signInWithRedirect(auth, provider);
 
-  logEvent(analytics, 'login', { method: 'Google' });
-
-  return userCredential;
+  return;
 }
 
 export async function singInWithTwitter() {
-  const analytics = await getAnalytics();
-  if(!analytics) return;
-
   const provider = new TwitterAuthProvider();
-  const userCredential = await signInWithPopup(auth, provider);
+  await signInWithRedirect(auth, provider);
 
-  logEvent(analytics, 'login', { method: 'Twitter' });
-
-  return userCredential;
+  return;
 }
 
 // Sign Out
 export async function signOut() {
   const analytics = await getAnalytics();
-  if(!analytics) return;
 
   await _signOut(auth)
 
-  logEvent(analytics, 'logout');
+  if(analytics) {
+    logEvent(analytics, 'logout');
+  }
 
   return;
 }
@@ -65,7 +62,7 @@ export async function linkGoogle() {
   if(!user) throw new Error('no-user');
 
   const provider = new GoogleAuthProvider();
-  return await linkWithPopup(user, provider);
+  return await linkWithRedirect(user, provider);
 }
 
 export async function linkTwitter() {
@@ -73,7 +70,7 @@ export async function linkTwitter() {
   if(!user) throw new Error('no-user');
 
   const provider = new TwitterAuthProvider();
-  return await linkWithPopup(user, provider);
+  return await linkWithRedirect(user, provider);
 }
 
 // Unlink
