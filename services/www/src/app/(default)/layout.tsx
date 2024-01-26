@@ -10,23 +10,20 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
     <>
       <DefaultContextProvider
       >
-        <SnackbarRegistry
-        >
-          {children}
+        {children}
 
-          <Footer
-            mt={4}
-          />
+        <Footer
+          mt={4}
+        />
 
-          <SideNavigation
-          />
+        <SideNavigation
+        />
 
-          <SignInPopup
-          />
+        <SignInPopup
+        />
 
-          <AccountSettingPopup
-          />
-        </SnackbarRegistry>
+        <AccountSettingPopup
+        />
       </DefaultContextProvider>
     </>
   )

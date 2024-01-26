@@ -32,6 +32,16 @@ const nextConfig = {
     return config;
   },
   output: 'standalone',
+  rewrites: () => {
+    return [
+      {
+        source: '/__/auth/:path*',
+        destination: process.env.NEXT_PUBLIC_FIREBASE_MODE === 'development'
+          ? 'https://tsurugi-mahiru-schedule-dev.firebaseapp.com/__/auth/:path*'
+          : 'https://tsurugi-mahiru-schedule.firebaseapp.com/__/auth/:path*',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

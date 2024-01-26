@@ -35,10 +35,6 @@ export default function SignInPopup({
       <DialogContent
       >
         <SignInForm
-          onComplete={() => {
-            enqueueSnackbar('ログインしました', { variant: 'success' });
-            close();
-          }}
           onError={() => {
             enqueueSnackbar('ログイン中にエラーが発生しました', { variant: 'error' });
           }}
