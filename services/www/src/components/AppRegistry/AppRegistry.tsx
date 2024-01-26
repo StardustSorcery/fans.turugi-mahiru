@@ -1,6 +1,6 @@
 'use client';
 import { AppContext } from "@/types/app";
-import { auth, onAuthStateChanged } from "@/utils/firebase/auth";
+import { auth, getRedirectResult, onAuthStateChanged } from "@/utils/firebase/auth";
 import { getAnalytics } from "@/utils/firebase/init";
 import { logEvent } from "firebase/analytics";
 import {
@@ -10,16 +10,21 @@ import {
 } from "react"
 import { appContext } from "./AppContext";
 import hash from 'object-hash';
+import { useSnackbar } from "notistack";
+import { FirebaseError } from "firebase/app";
 
 export default function AppRegistry({
   children,
   ...props
 }: React.PropsWithChildren): React.ReactNode {
+  const { enqueueSnackbar } = useSnackbar();
+
   // Handle Firebase Auth
   const [ firebaseUser, setFirebaseUser ] = useState<AppContext['firebase']['user'] | undefined>(undefined);
   const [ firebaseUserHash, setFirebaseUserHash ] = useState<AppContext['firebase']['userHash']>(null);
   const [ firebaseStatus, setFirebaseStatus ] = useState<AppContext['firebase']['status']>('loading');
 
+  // onAuthStateChanged --> update `user`, `userHash`
   useEffect(() => {
     onAuthStateChanged((user) => {
       setFirebaseUser(user);
@@ -31,6 +36,7 @@ export default function AppRegistry({
     });
   }, []);
 
+  // update `userHash` from `user` manually
   const reloadFirebaseUser = useCallback(() => {
     const user = auth.currentUser;
     setFirebaseUserHash(
@@ -40,6 +46,7 @@ export default function AppRegistry({
     );
   }, []);
 
+  // update `status` from `user` and `userHash`
   useEffect(() => {
     getAnalytics()
       .then(analytics => {
@@ -64,6 +71,36 @@ export default function AppRegistry({
     firebaseUser,
     firebaseUserHash,
   ]);
+
+  // notify redirect auth result
+  useEffect(() => {
+    getAnalytics()
+      .then(analytics => {
+        return getRedirectResult()
+          .then(userCredential => {
+            if(userCredential === null) return;
+
+            switch(userCredential.operationType) {
+              default: break;
+              case 'signIn': {
+                enqueueSnackbar('ログインしました', { variant: 'success' });
+
+                if(analytics && userCredential.providerId) {
+                  logEvent(analytics, 'login', { method: userCredential.providerId });
+                }
+                break;
+              }
+            }
+
+            return;
+          })
+          .catch((err: FirebaseError) => {
+            enqueueSnackbar('ログイン中にエラーが発生しました', { variant: 'error' });
+            return;
+          });
+      });
+  }, []);
+
 
   return (
     <appContext.Provider

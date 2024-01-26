@@ -1,4 +1,5 @@
 import AppRegistry from '@/components/AppRegistry/AppRegistry';
+import SnackbarRegistry from '@/components/SnackbarRegistry/SnackbarRegistry';
 import ThemeRegistry from '@/components/ThemeRegistry/ThemeRegistry';
 import defaultMetadata from '@/constants/defaultMetadata';
 import { Metadata, Viewport } from 'next';
@@ -18,13 +19,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body
       >
-        <AppRegistry
+        <SnackbarRegistry
         >
-          <ThemeRegistry
+          <AppRegistry
           >
-            {children}
-          </ThemeRegistry>
-        </AppRegistry>
+            <ThemeRegistry
+            >
+              {children}
+            </ThemeRegistry>
+          </AppRegistry>
+        </SnackbarRegistry>
       </body>
     </html>
   );

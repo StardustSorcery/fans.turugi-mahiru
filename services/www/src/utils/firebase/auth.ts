@@ -10,6 +10,7 @@ import {
   unlink,
   updateProfile,
   signInWithRedirect,
+  getRedirectResult as _getRedirectResult,
 } from 'firebase/auth';
 import { app, getAnalytics } from './init';
 import { logEvent } from 'firebase/analytics';
@@ -22,29 +23,22 @@ export function onAuthStateChanged(cb: NextOrObserver<User>) {
   return _onAuthStateChanged(auth, cb);
 }
 
+// Redirect Result
+export async function getRedirectResult() {
+  return await _getRedirectResult(auth);
+}
+
 // Sign In
 export async function singInWithGoogle() {
-  const analytics = await getAnalytics();
-
   const provider = new GoogleAuthProvider();
   await signInWithRedirect(auth, provider);
-
-  if(analytics) {
-    logEvent(analytics, 'login', { method: 'Google' });
-  }
 
   return;
 }
 
 export async function singInWithTwitter() {
-  const analytics = await getAnalytics();
-
   const provider = new TwitterAuthProvider();
   await signInWithRedirect(auth, provider);
-
-  if(analytics) {
-    logEvent(analytics, 'login', { method: 'Twitter' });
-  }
 
   return;
 }
