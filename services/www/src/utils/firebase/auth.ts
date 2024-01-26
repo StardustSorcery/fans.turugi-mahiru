@@ -6,7 +6,6 @@ import {
   type NextOrObserver,
   GoogleAuthProvider,
   TwitterAuthProvider,
-  signInWithPopup,
   linkWithPopup,
   unlink,
   updateProfile,
@@ -26,24 +25,26 @@ export function onAuthStateChanged(cb: NextOrObserver<User>) {
 // Sign In
 export async function singInWithGoogle() {
   const analytics = await getAnalytics();
-  if(!analytics) return;
 
   const provider = new GoogleAuthProvider();
   await signInWithRedirect(auth, provider);
 
-  logEvent(analytics, 'login', { method: 'Google' });
+  if(analytics) {
+    logEvent(analytics, 'login', { method: 'Google' });
+  }
 
   return;
 }
 
 export async function singInWithTwitter() {
   const analytics = await getAnalytics();
-  if(!analytics) return;
 
   const provider = new TwitterAuthProvider();
-  await signInWithPopup(auth, provider);
+  await signInWithRedirect(auth, provider);
 
-  logEvent(analytics, 'login', { method: 'Twitter' });
+  if(analytics) {
+    logEvent(analytics, 'login', { method: 'Twitter' });
+  }
 
   return;
 }
@@ -51,11 +52,12 @@ export async function singInWithTwitter() {
 // Sign Out
 export async function signOut() {
   const analytics = await getAnalytics();
-  if(!analytics) return;
 
   await _signOut(auth)
 
-  logEvent(analytics, 'logout');
+  if(analytics) {
+    logEvent(analytics, 'logout');
+  }
 
   return;
 }
