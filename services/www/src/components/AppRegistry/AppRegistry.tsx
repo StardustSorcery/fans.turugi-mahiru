@@ -90,6 +90,10 @@ export default function AppRegistry({
                 }
                 break;
               }
+              case 'link': {
+                enqueueSnackbar('アカウントを連携しました', { variant: 'success' });
+                break;
+              }
             }
 
             return;

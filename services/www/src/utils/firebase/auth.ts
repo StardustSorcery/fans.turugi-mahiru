@@ -6,11 +6,11 @@ import {
   type NextOrObserver,
   GoogleAuthProvider,
   TwitterAuthProvider,
-  linkWithPopup,
   unlink,
   updateProfile,
   signInWithRedirect,
   getRedirectResult as _getRedirectResult,
+  linkWithRedirect,
 } from 'firebase/auth';
 import { app, getAnalytics } from './init';
 import { logEvent } from 'firebase/analytics';
@@ -62,7 +62,7 @@ export async function linkGoogle() {
   if(!user) throw new Error('no-user');
 
   const provider = new GoogleAuthProvider();
-  return await linkWithPopup(user, provider);
+  return await linkWithRedirect(user, provider);
 }
 
 export async function linkTwitter() {
@@ -70,7 +70,7 @@ export async function linkTwitter() {
   if(!user) throw new Error('no-user');
 
   const provider = new TwitterAuthProvider();
-  return await linkWithPopup(user, provider);
+  return await linkWithRedirect(user, provider);
 }
 
 // Unlink

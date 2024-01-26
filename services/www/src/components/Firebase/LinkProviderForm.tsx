@@ -13,13 +13,13 @@ import { linkGoogle, linkTwitter, unlinkGoogle, unlinkTwitter } from "@/utils/fi
 import { GoogleAuthProvider, TwitterAuthProvider, UserInfo } from "firebase/auth";
 
 export default function LinkProvierForm({
-  onComplete = () => {},
+  onCompleteUnlink = () => {},
   onFail = () => {},
   ...props
 }: ListProps<
   any,
   {
-    onComplete?: () => any;
+    onCompleteUnlink?: () => any;
     onFail?: (err: any) => any;
   }
 >): React.ReactNode {
@@ -92,7 +92,7 @@ export default function LinkProvierForm({
                     unlinkGoogle()
                       .then(() => {
                         reloadUser();
-                        onComplete();
+                        onCompleteUnlink();
                       })
                       .catch(err => {
                         onFail(err);
@@ -114,15 +114,9 @@ export default function LinkProvierForm({
                   onClick={() => {
                     setIsProcessing(true);
                     linkGoogle()
-                      .then(() => {
-                        reloadUser();
-                        onComplete();
-                      })
                       .catch(err => {
-                        onFail(err);
-                      })
-                      .finally(() => {
                         setIsProcessing(false);
+                        onFail(err);
                       });
                   }}
                   disabled={isProcessing}
@@ -155,7 +149,7 @@ export default function LinkProvierForm({
                     unlinkTwitter()
                       .then(() => {
                         reloadUser();
-                        onComplete();
+                        onCompleteUnlink();
                       })
                       .catch(err => {
                         onFail(err);
@@ -177,15 +171,9 @@ export default function LinkProvierForm({
                   onClick={() => {
                     setIsProcessing(true);
                     linkTwitter()
-                      .then(() => {
-                        reloadUser();
-                        onComplete();
-                      })
                       .catch(err => {
-                        onFail(err);
-                      })
-                      .finally(() => {
                         setIsProcessing(false);
+                        onFail(err);
                       });
                   }}
                   disabled={isProcessing}
