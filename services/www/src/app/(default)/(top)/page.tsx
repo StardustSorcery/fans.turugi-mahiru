@@ -30,7 +30,6 @@ export const metadata = {
 };
 
 export default async function TopPage() {
-  console.log('Top Render')
   const {
     data: latestLiveStream,
     error: latestLiveStreamError,
@@ -151,6 +150,7 @@ export default async function TopPage() {
 
                     return (
                       <VideoListItem
+                        key={video.id}
                         item={{
                           video,
                           title: video.attributes.title,
