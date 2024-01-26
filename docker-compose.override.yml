@@ -5,8 +5,12 @@ services:
       TZ: Asia/Tokyo
     volumes:
       - ./services/proxy/conf.d:/etc/nginx/conf.d
+      - ${PROXY_CMS_CERT_PATH}:/var/certs/cms-cert.pem
+      - ${PROXY_CMS_CERT_KEY_PATH}:/var/certs/cms-cert-key.pem
+      - ${PROXY_WWW_CERT_PATH}:/var/certs/www-cert.pem
+      - ${PROXY_WWW_CERT_KEY_PATH}:/var/certs/www-cert-key.pem
     ports:
-      - ${HTTP_PORT:-8080}:80
+      - ${HTTP_PORT:-8080}:443
 
   db:
     image: mysql:8.0.30-oracle
@@ -37,7 +41,7 @@ services:
       context: ./services/cms
       dockerfile: dev.Dockerfile
       args:
-        PUBLIC_URL: http://cms.turugi-mahiru.fans.127.0.0.1.nip.io:${HTTP_PORT:-8080}/
+        PUBLIC_URL: https://cms.turugi-mahiru.fans.127.0.0.1.nip.io:${HTTP_PORT:-8080}/
     volumes:
       - ./services/cms:/app
 
@@ -73,7 +77,8 @@ services:
       context: ./services/www
       dockerfile: dev.Dockerfile
       args:
-        CMS_PUBLIC_URL: http://cms.turugi-mahiru.fans.127.0.0.1.nip.io:${HTTP_PORT:-8080}/
+        CMS_PUBLIC_URL: https://cms.turugi-mahiru.fans.127.0.0.1.nip.io:${HTTP_PORT:-8080}/
+        PUBLIC_URL: https://www.turugi-mahiru.fans.127.0.0.1.nip.io:${HTTP_PORT:-8080}/
     environment:
       REDIS_URI: ${REDIS_URI:-redis://redis/1}
     volumes:

@@ -43,8 +43,6 @@ export default function AppRegistry({
   useEffect(() => {
     getAnalytics()
       .then(analytics => {
-        if(!analytics) return;
-
         setFirebaseStatus(prevStatus => {
           const status =
             firebaseUser === undefined
@@ -55,7 +53,7 @@ export default function AppRegistry({
                   : 'authenticated'
               );
 
-          if(prevStatus === 'loading' && status === 'authenticated') {
+          if(prevStatus === 'loading' && status === 'authenticated' && analytics) {
             logEvent(analytics, 'login_auto');
           }
 

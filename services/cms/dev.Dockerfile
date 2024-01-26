@@ -16,7 +16,7 @@ CMD [ "npm", "run", "develop" ]
 HEALTHCHECK --interval=30s --timeout=60s --start-period=15s --retries=4 \
   CMD wget -q -O - http://127.0.0.1:1337/_health || exit 1
 
-ARG PUBLIC_URL="http://cms.turugi-mahiru.fans.127.0.0.1.nip.io:8080/"
+ARG PUBLIC_URL="https://cms.turugi-mahiru.fans.127.0.0.1.nip.io:8080/"
 ENV PUBLIC_URL=${PUBLIC_URL}
 
 ENV DATABASE_CLIENT="mysql"
