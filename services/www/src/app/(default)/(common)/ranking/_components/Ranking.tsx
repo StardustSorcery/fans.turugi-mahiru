@@ -71,16 +71,16 @@ export default function RankingMain({
               <>
                 <Typography
                 >
-                  ログインすることで, おすすめ動画・配信を投票できます。
+                  ログインすることで、おすすめ動画・配信を投票できます。
                 </Typography>
                 <Typography
                 >
-                  集計は毎日 2:00 (JST) に行われ, 上位 100 件が表示されます。
+                  集計は毎日 2:00 (JST) に行われ、上位 100 件が表示されます。
                 </Typography>
                 <Typography
                   color="textSecondary"
                 >
-                  ※ 集計結果には投票を行ったユーザの名前は表示されません。
+                  ※ 集計結果には投票を行ったユーザの名前は公開されません。
                 </Typography>
               </>
             }
