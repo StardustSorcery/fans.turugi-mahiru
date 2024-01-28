@@ -241,11 +241,11 @@ export default function VotingDialog({
             <>
               <Typography
               >
-                それぞれのタレントに最大 5 つの動画・配信を投票できます.
+                最大 5 つの動画・配信を投票できます。
               </Typography>
               <Typography
               >
-                順位ごとにポイントが異なり, 集計にはポイントが使用されます.
+                順位ごとにポイントが異なり、集計にはポイントが使用されます。
               </Typography>
             </>
           }
@@ -300,7 +300,7 @@ export default function VotingDialog({
                 />
                 <Typography
                 >
-                  URL を入力して動画・配信をリストに追加してください.
+                  URL を入力して動画・配信をリストに追加してください。
                 </Typography>
               </Stack>
             ) : (
