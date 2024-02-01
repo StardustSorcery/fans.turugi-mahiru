@@ -1,6 +1,6 @@
 'use client';
 
-import { Backdrop } from "@mui/material";
+import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export default function LoadingBackdrop({
@@ -17,11 +17,13 @@ export default function LoadingBackdrop({
     <>
       {children}
 
-      <Backdrop
-        open={isLoading}
+      <Box
         sx={{
-          backgroundColor: theme => theme.palette.primary.main,
+          position: 'fixed',
+          inset: 0,
           zIndex: theme => theme.zIndex.tooltip + 100,
+          backgroundColor: theme => theme.palette.primary.main,
+          visibility: isLoading ? 'visible' : 'hidden',
         }}
       />
     </>
