@@ -15,14 +15,15 @@ export default function LoadingBackdrop({
 
   return (
     <>
+      {children}
+
       <Backdrop
         open={isLoading}
         sx={{
           backgroundColor: theme => theme.palette.primary.main,
+          zIndex: theme => theme.zIndex.tooltip + 100,
         }}
       />
-
-      {children}
     </>
   );
 }
