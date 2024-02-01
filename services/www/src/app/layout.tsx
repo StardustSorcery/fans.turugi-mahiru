@@ -3,6 +3,7 @@ import SnackbarRegistry from '@/components/SnackbarRegistry/SnackbarRegistry';
 import ThemeRegistry from '@/components/ThemeRegistry/ThemeRegistry';
 import defaultMetadata from '@/constants/defaultMetadata';
 import { Metadata, Viewport } from 'next';
+import LoadingBackdrop from './_components/LoadingBackdrop';
 
 export const metadata: Metadata = {
   ...defaultMetadata,
@@ -25,7 +26,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             <ThemeRegistry
             >
-              {children}
+              <LoadingBackdrop
+              >
+                {children}
+              </LoadingBackdrop>
             </ThemeRegistry>
           </AppRegistry>
         </SnackbarRegistry>
