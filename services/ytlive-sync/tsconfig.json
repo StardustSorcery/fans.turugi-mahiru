@@ -24,6 +24,7 @@
   "target": "es2019",
   "isolatedModules": false,
   "noEmit": false,
+  "noUncheckedIndexedAccess": true,
   "composite": true
 },
 "include": [
