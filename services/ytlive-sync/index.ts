@@ -160,7 +160,7 @@ async function main() {
                 authorId: null,
                 title: null,
               },
-              isInProgressLiveStream: (video.duration.seconds === null) && (!video.upcoming),
+              isInProgressLiveStream: (video.duration.seconds === null || isNaN(video.duration.seconds)) && (!video.upcoming),
               isUpcomingLiveStream: !!video.upcoming,
               videoPublishedAt: null,
               scheduledStartsAt: video.upcoming?.toISOString() || null,

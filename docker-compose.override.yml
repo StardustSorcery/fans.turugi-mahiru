@@ -56,6 +56,7 @@ services:
       dockerfile: Dockerfile
     environment:
       REDIS_URI: ${REDIS_URI:-redis://redis/1}
+      YT_CHANNEL_ID: ${YTLIVE_SYNC_YT_CHANNEL_ID:-UCSzT-rU62SSiham-g1Dj9yw}
 
   # ranking
   ranking-aggregate:
