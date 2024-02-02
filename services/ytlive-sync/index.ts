@@ -178,6 +178,9 @@ async function main() {
             if(err instanceof Error) {
               logger.error(`[Sync Task] ${err.toString()}`);
             }
+            else if(typeof err === 'object') {
+              logger.error(`[Sync Task] ${JSON.stringify(err)}`);
+            }
             else {
               logger.error('[Sync Task] Unknown error occured.');
             }
@@ -190,6 +193,9 @@ async function main() {
       catch(err) {
         if(err instanceof Error) {
           logger.error(`[Sync Task] ${err.toString()}`);
+        }
+        else if(typeof err === 'object') {
+          logger.error(`[Sync Task] ${JSON.stringify(err)}`);
         }
         else {
           logger.error('[Sync Task] Unknown error occured.');
@@ -305,6 +311,9 @@ async function main() {
         if(err instanceof Error) {
           logger.error(`[Resync Task] ${err.toString()}`);
         }
+        else if(typeof err === 'object') {
+          logger.error(`[Resync Task] ${JSON.stringify(err)}`);
+        }
         else {
           logger.error('[Resync Task] Unknown error occured.');
         }
@@ -326,6 +335,9 @@ try {
 catch(err) {
   if(err instanceof Error) {
     logger.error(`[System] ${err.toString()}`);
+  }
+  else if(typeof err === 'object') {
+    logger.error(`[System] ${JSON.stringify(err)}`);
   }
   else {
     logger.error('[System] Unknown error occured.');

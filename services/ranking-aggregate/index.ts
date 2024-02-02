@@ -79,6 +79,9 @@ async function main() {
         if(err instanceof Error) {
           logger.error(`[Aggregate Task] ${err.toString()}`);
         }
+        else if(typeof err === 'object') {
+          logger.error(`[Aggregate Task] ${JSON.stringify(err)}`);
+        }
         else {
           logger.error('[Aggregate Task] Unknown error occured.');
         }
@@ -100,6 +103,9 @@ try {
 catch(err) {
   if(err instanceof Error) {
     logger.error(`[System] ${err.toString()}`);
+  }
+  else if(typeof err === 'object') {
+    logger.error(`[System] ${JSON.stringify(err)}`);
   }
   else {
     logger.error('[System] Unknown error occured.');
