@@ -1,16 +1,11 @@
 import * as log4js from '@/logger';
 import strapi from '@/strapi';
-import * as redis from '@/redis';
 import objectHash from 'object-hash';
 import { StrapiResponseData, Video } from '@/types/strapi';
 
 const logger = log4js.init().getLogger();
 
 export default async function upsertVideo(record: Partial<Omit<Video, 'etag' | 'raw'>>, raw: any, recordId?: number) {
-  const redisClient = await redis.init();
-
-  await redis.connect(redisClient);
-
   return (async () => {
     // get current core fields
     const currentRecord = await strapi
@@ -147,8 +142,5 @@ export default async function upsertVideo(record: Partial<Omit<Video, 'etag' | '
     
       return;
     }
-  })()
-    .finally(async () => {
-      await redisClient.disconnect();
-    });
+  })();
 }
