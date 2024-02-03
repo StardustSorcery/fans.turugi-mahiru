@@ -6,6 +6,7 @@ import upsertVideo from '@/libs/upsertVideo';
 import minimist from 'minimist';
 import * as GYoutube from '@/g-youtube';
 import listVideosByPage from '@/libs/listVideosByPage';
+import listInProgressLiveStreams from '@/libs/listInProgressLiveStreams';
 
 const logger = log4js.init().getLogger();
 
@@ -141,52 +142,93 @@ async function main() {
             throw err;
           });
 
-        await Promise.allSettled(liveStreams.map(async (video) => {
-          try {
-            // check Etag (MD5 hash)
-            if(!(video instanceof YTNodes.Video)) {
-              logger.warn(`[Sync Task] Skipping video "${video.title}": the type "${video.type}" is not acceptable.`);
+        // fetch in-progress live stream from cms and list ended live streams
+        const endedLiveStreamsIds = new Set<string>();
+        {
+          const inProgressLiveStreams = await listInProgressLiveStreams();
+          const listedLiveStreamIds = new Set<string>(liveStreams.map(video => video instanceof YTNodes.Video ? video.id : '').filter(e => e !== ''));
+          const markedLiveStreamIds = new Set<string>(inProgressLiveStreams.map(record => record.attributes.videoId));
+
+          markedLiveStreamIds.forEach(mId => {
+            if(!listedLiveStreamIds.has(mId)) endedLiveStreamsIds.add(mId);
+          });
+        }
+        logger.debug(`[Sync Task] Detected ${endedLiveStreamsIds.size} ended live streams.`);
+
+        await Promise.allSettled([
+          ...(liveStreams.map(async (video) => {
+            try {
+              if(!(video instanceof YTNodes.Video)) {
+                logger.warn(`[Sync Task] Skipping video "${video.title}": the type "${video.type}" is not acceptable.`);
+                return;
+              }
+
+              const record: Omit<Video, 'etag' | 'raw'> = {
+                provider: 'youtube',
+                videoId: video.id,
+                type: 'LiveStream',
+                title: video.title.toString(),
+                description: '',
+                thumbnails: video.thumbnails,
+                author: {
+                  authorId: null,
+                  title: null,
+                },
+                isInProgressLiveStream: (video.duration.seconds === null || isNaN(video.duration.seconds)) && (!video.upcoming),
+                isUpcomingLiveStream: !!video.upcoming,
+                videoPublishedAt: null,
+                scheduledStartsAt: video.upcoming?.toISOString() || null,
+                scheduledEndsAt: null,
+                startedAt: null,
+                endedAt: null,
+                client: 'youtubei.js',
+              };
+
+              await upsertVideo(record, video);
+
               return;
             }
-
-            const record: Omit<Video, 'etag' | 'raw'> = {
-              provider: 'youtube',
-              videoId: video.id,
-              type: 'LiveStream',
-              title: video.title.toString(),
-              description: '',
-              thumbnails: video.thumbnails,
-              author: {
-                authorId: null,
-                title: null,
-              },
-              isInProgressLiveStream: (video.duration.seconds === null || isNaN(video.duration.seconds)) && (!video.upcoming),
-              isUpcomingLiveStream: !!video.upcoming,
-              videoPublishedAt: null,
-              scheduledStartsAt: video.upcoming?.toISOString() || null,
-              scheduledEndsAt: null,
-              startedAt: null,
-              endedAt: null,
-              client: 'youtubei.js',
-            };
-
-            await upsertVideo(record, video);
-
-            return;
-          }
-          catch(err) {
-            if(err instanceof Error) {
-              logger.error(`[Sync Task] ${err.toString()}`);
+            catch(err) {
+              if(err instanceof Error) {
+                logger.error(`[Sync Task] ${err.toString()}`);
+              }
+              else if(typeof err === 'object') {
+                logger.error(`[Sync Task] ${JSON.stringify(err)}`);
+              }
+              else {
+                logger.error('[Sync Task] Unknown error occured.');
+              }
+              throw err;
             }
-            else if(typeof err === 'object') {
-              logger.error(`[Sync Task] ${JSON.stringify(err)}`);
-            }
-            else {
-              logger.error('[Sync Task] Unknown error occured.');
-            }
-            throw err;
-          }
-        })).then(results => {
+          })),
+          ...(Array.from(endedLiveStreamsIds).map(async (videoId) => {
+              const videoInfo = await youtube
+                .getBasicInfo(videoId);
+
+              const record: Omit<Video, 'etag' | 'raw'> = {
+                provider: 'youtube',
+                videoId: videoId,
+                type: 'LiveStream',
+                title: videoInfo.basic_info.title || '',
+                description: '',
+                thumbnails: [],
+                author: {
+                  authorId: null,
+                  title: null,
+                },
+                isInProgressLiveStream: false,
+                isUpcomingLiveStream: false,
+                videoPublishedAt: null,
+                scheduledStartsAt: null,
+                scheduledEndsAt: null,
+                startedAt: null,
+                endedAt: null,
+                client: 'youtubei.js',
+              };
+
+              await upsertVideo(record, videoInfo);
+          })),
+        ]).then(results => {
           logger.info(`[Sync Task] Successfully processed ${results.filter(r => r.status === 'fulfilled').length}/${results.length}.`);
         });
       }
@@ -211,6 +253,8 @@ async function main() {
       const tasks = [];
 
       try {
+        logger.info(`[Resync Task] Updating all video records...`);
+
         // List existing records
         for(let i = 1; true; i++) {
           const targetRecords = await listVideosByPage({ page: i, pageSize: 50 });
